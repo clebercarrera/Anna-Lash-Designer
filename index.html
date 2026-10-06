@@ -1,0 +1,2708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Anna Mendonça Lash Designer</title>
+
+  <!-- PWA & Apple Support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Anna Lash">
+  <meta name="theme-color" content="#5c2340">
+
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Tipografia -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+  <style>
+    /* VARIÁVEIS DE TEMA (LIGHT / DARK) — identidade "Atelier" */
+    :root {
+      --bg-body: #f7f0ee;
+      --bg-container: #fffbfa;
+      --text-main: #2e2029;
+      --text-muted: #8a7480;
+      --primary: #7a3b56;
+      --primary-dark: #5c2340;
+      --primary-light: #f5e4e9;
+      --accent-gold: #c39a5c;
+      --border-color: #ecdbe0;
+      --card-bg: #fdf8f7;
+      --card-item-bg: #ffffff;
+      --tab-bg: #f1dfe4;
+      --tab-text: #7a3b56;
+      --fin-card-bg: #f6e9ec;
+
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+      --radius-lg: 22px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --shadow-soft: 0 10px 28px rgba(90, 35, 60, 0.09);
+      --shadow-card: 0 3px 10px rgba(90, 35, 60, 0.06);
+    }
+
+    body.dark-mode {
+      --bg-body: #171114;
+      --bg-container: #221820;
+      --text-main: #f2e6ea;
+      --text-muted: #b39aa4;
+      --primary: #e2a2c0;
+      --primary-dark: #f0bcd4;
+      --primary-light: #322029;
+      --accent-gold: #d9b978;
+      --border-color: #392a33;
+      --card-bg: #291d26;
+      --card-item-bg: #2d2028;
+      --tab-bg: #322029;
+      --tab-text: #eec2da;
+      --fin-card-bg: #2d2028;
+
+      --shadow-soft: 0 10px 28px rgba(0, 0, 0, 0.35);
+      --shadow-card: 0 3px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-body);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--primary) 7%, transparent), transparent 45%), var(--bg-body);
+      color: var(--text-main);
+      padding-top: max(15px, env(safe-area-inset-top));
+      padding-bottom: max(15px, env(safe-area-inset-bottom));
+      padding-left: max(15px, env(safe-area-inset-left));
+      padding-right: max(15px, env(safe-area-inset-right));
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-container);
+      padding: 22px 18px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+      position: relative;
+      transition: background-color 0.3s ease;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 18px;
+      position: relative;
+      padding-top: 4px;
+    }
+
+    .theme-toggle-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: var(--primary-light);
+      border: 1px solid var(--border-color);
+      color: var(--primary);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-top: 0;
+      min-height: auto;
+      transition: transform 0.2s, background-color 0.3s;
+    }
+    .theme-toggle-btn:active { transform: scale(0.88); }
+
+    .logo {
+      max-width: 168px;
+      height: auto;
+      margin-bottom: 4px;
+      display: inline-block;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      color: var(--primary);
+      font-size: 1.32rem;
+      font-weight: 600;
+      font-style: italic;
+      letter-spacing: 0.1px;
+      margin-bottom: 10px;
+    }
+
+    /* Traço assinatura — inspirado no traçado de um fio de cílio */
+    .header-flourish {
+      display: block;
+      width: 92px;
+      height: 12px;
+      margin: 0 auto 4px;
+      color: var(--accent-gold);
+    }
+    .header-flourish svg { display: block; width: 100%; height: 100%; }
+
+    .main-menu-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 5px;
+    }
+
+    .menu-category { padding: 11px; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: color-mix(in srgb, var(--card-bg) 88%, var(--primary-light)); }
+    .menu-category-title { display:flex; align-items:center; gap:7px; margin:0 0 9px 2px; color:var(--primary); font-size:0.86rem; font-weight:800; }
+    .menu-category-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:9px; }
+    .menu-category .menu-card { min-height:88px; padding:12px 8px 10px; }
+    .menu-category .menu-card-icon { font-size:1.35rem; width:36px; height:36px; margin-bottom:5px; }
+    .menu-category .menu-card-title { font-size:0.76rem; }
+
+    .menu-card {
+      background: var(--card-item-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 18px 12px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-card);
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+      position: relative;
+      min-height: 104px;
+      overflow: hidden;
+    }
+
+    .menu-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent-gold));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .menu-card:hover::before { transform: scaleX(1); }
+
+    .menu-card:active {
+      transform: scale(0.96);
+      box-shadow: var(--shadow-card);
+    }
+
+    .dashboard-summary {
+      margin: 0 0 14px;
+      padding: 14px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      background: var(--card-bg);
+    }
+    .dashboard-summary h2 { font-family: var(--font-display); font-style: italic; color: var(--primary); font-size: 1.05rem; margin-bottom: 10px; }
+    .dashboard-summary.highlight { animation: dashboardHighlight 0.9s ease; }
+    @keyframes dashboardHighlight { 0%, 100% { box-shadow: var(--shadow-card); } 45% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-gold) 45%, transparent), var(--shadow-card); } }
+    .dashboard-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .dashboard-metric { padding: 9px 8px; border-radius: var(--radius-sm); background: var(--card-item-bg); border: 1px solid var(--border-color); text-align: center; }
+    .dashboard-metric span { display: block; color: var(--text-muted); font-size: 0.68rem; font-weight: 700; }
+    .dashboard-metric strong { display: block; color: var(--primary); font-size: 1.05rem; margin-top: 3px; }
+    .dashboard-next { margin-top: 10px; color: var(--text-muted); font-size: 0.76rem; line-height: 1.4; }
+    .dashboard-reminders { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
+    .dashboard-reminder { padding: 7px 9px; border-radius: 8px; background: var(--primary-light); color: var(--text-main); font-size: 0.75rem; }
+
+    .menu-card-icon {
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--primary-light);
+    }
+
+    .menu-card-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1.25;
+    }
+
+    .menu-card.maint-card, .menu-card.bday-card {
+      background: var(--card-item-bg);
+      border-color: var(--border-color);
+    }
+
+    .menu-card.urgency-low {
+      border-color: #e9c789;
+    }
+    .menu-card.urgency-low .menu-card-title { color: #b3791b; }
+    .menu-card.urgency-low .menu-card-icon { background: #fbeed4; }
+
+    .menu-card.urgency-high {
+      border-color: #ecb0bc;
+    }
+    .menu-card.urgency-high .menu-card-title { color: #c23e58; }
+    .menu-card.urgency-high .menu-card-icon { background: #fbdfe4; }
+
+    .menu-badge {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: radial-gradient(circle, #ef5c7a 0%, #c23e58 100%);
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 800;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 5px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid var(--bg-container);
+      box-shadow: 0 0 8px rgba(194, 62, 88, 0.55);
+      animation: ledPulse 1.2s infinite ease-in-out;
+    }
+
+    .menu-card.urgency-high .menu-badge {
+      animation: ledPulse 0.6s infinite ease-in-out;
+    }
+
+    .agenda-today-alert {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: -4px 0 14px;
+      padding: 11px 13px;
+      border: 1px solid #ecb0bc;
+      border-left: 4px solid #c23e58;
+      border-radius: var(--radius-sm);
+      background: color-mix(in srgb, #fbdfe4 72%, var(--card-item-bg));
+      color: var(--text-main);
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+    .agenda-today-alert.hidden { display: none; }
+    .agenda-alert-led {
+      flex: 0 0 auto;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ef3154;
+      box-shadow: 0 0 0 3px rgba(239, 49, 84, 0.16), 0 0 12px rgba(239, 49, 84, 0.8);
+      animation: ledPulse 0.75s infinite ease-in-out;
+    }
+    .agenda-tomorrow-alert {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: -4px 0 14px;
+      padding: 11px 13px;
+      border: 1px solid #e9c789;
+      border-left: 4px solid #d39a28;
+      border-radius: var(--radius-sm);
+      background: color-mix(in srgb, #fbeed4 78%, var(--card-item-bg));
+      color: var(--text-main);
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+    .agenda-tomorrow-alert.hidden { display: none; }
+    .agenda-tomorrow-led {
+      flex: 0 0 auto;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #e6a629;
+      box-shadow: 0 0 0 3px rgba(230, 166, 41, 0.18), 0 0 12px rgba(230, 166, 41, 0.85);
+      animation: ledPulse 0.9s infinite ease-in-out;
+    }
+    .agenda-tomorrow-alert strong { color: #a96f12; }
+    .menu-badge.tomorrow-badge {
+      top: 36px;
+      background: radial-gradient(circle, #f3c65d 0%, #c8891d 100%);
+      box-shadow: 0 0 8px rgba(211, 154, 40, 0.65);
+    }
+    body.dark-mode .agenda-tomorrow-alert {
+      background: color-mix(in srgb, #725622 42%, var(--card-item-bg));
+      border-color: #b99143;
+    }
+    body.dark-mode .agenda-tomorrow-alert strong { color: #f0c96d; }
+    .agenda-today-alert strong { color: #b52e4b; }
+    body.dark-mode .agenda-today-alert {
+      background: color-mix(in srgb, #7d2d46 45%, var(--card-item-bg));
+      border-color: #a95770;
+    }
+    body.dark-mode .agenda-today-alert strong { color: #f3a8bd; }
+
+    @keyframes ledPulse {
+      0% { transform: scale(0.95); opacity: 0.75; }
+      50% { transform: scale(1.12); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.75; }
+    }
+
+    .btn-back {
+      background-color: transparent;
+      color: var(--text-muted);
+      width: auto;
+      min-height: 36px;
+      padding: 6px 4px;
+      font-size: 0.85rem;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      border: none;
+      font-weight: 700;
+      box-shadow: none;
+    }
+    .btn-back:active { transform: translateX(-2px); opacity: 0.7; }
+
+    .module-content { display: none; }
+    .module-content.active {
+      display: block;
+      animation: screenIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes screenIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      transition: background-color 0.3s;
+    }
+
+    .card h2 {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 600;
+      font-size: 1.12rem;
+      margin-bottom: 14px;
+      color: var(--primary);
+      padding-bottom: 10px;
+      position: relative;
+    }
+    .card h2::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 34px;
+      height: 2px;
+      background: var(--accent-gold);
+      border-radius: 2px;
+    }
+
+    .maintenance-list, .bday-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .maintenance-item, .bday-item {
+      background: var(--card-item-bg);
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-card);
+      border-left: 4px solid #e0a83c;
+      font-size: 0.88rem;
+      color: var(--text-main);
+    }
+
+    .bday-item.today {
+      border-left-color: #d84a72;
+      background: var(--card-item-bg);
+    }
+
+    .bday-item.tomorrow {
+      border-left-color: #9c5cb8;
+      background: var(--card-item-bg);
+    }
+
+    .top-clients-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .top-client-card {
+      background: var(--card-item-bg);
+      border-radius: var(--radius-sm);
+      padding: 14px 8px;
+      text-align: center;
+      box-shadow: var(--shadow-card);
+      border: 2px solid var(--border-color);
+      cursor: pointer;
+      color: var(--text-main);
+      transition: transform 0.2s ease;
+    }
+    .top-client-card:active { transform: scale(0.96); }
+
+    .top-client-card.gold { border-color: #d9a441; background: linear-gradient(180deg, color-mix(in srgb, #d9a441 12%, var(--card-item-bg)), var(--card-item-bg)); }
+    .top-client-card.silver { border-color: #b9c0c6; }
+    .top-client-card.bronze { border-color: #c17a4d; }
+
+    /* ESTILOS DE ALTERNÂNCIA (TABS) */
+    .tab-container {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 15px;
+      background: var(--tab-bg);
+      padding: 4px;
+      border-radius: var(--radius-sm);
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      color: var(--tab-text);
+      border: none;
+      padding: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 0;
+      min-height: 40px;
+      transition: all 0.2s ease;
+      box-shadow: none;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 40%, transparent);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: screenIn 0.28s ease; }
+
+    .financial-summary {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .fin-card {
+      background: var(--fin-card-bg);
+      padding: 14px 12px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+
+    .fin-card span { display: block; font-size: 0.72rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.2px; }
+    .fin-card strong { display: block; font-family: var(--font-display); font-size: 1.25rem; color: #2e9e64; margin-top: 5px; }
+    .finance-filter { display: grid; grid-template-columns: 1.5fr 1fr; gap: 8px; margin-bottom: 15px; }
+    .finance-filter .form-group { margin-bottom: 0; }
+    .finance-filter label { margin-bottom: 6px; }
+    .finance-note { color: var(--text-muted); font-size: 0.75rem; margin-top: -5px; margin-bottom: 14px; }
+    .fin-card .fin-detail { color: var(--primary); font-family: var(--font-body); font-size: 0.9rem; white-space: normal; }
+
+    .form-group { margin-bottom: 13px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    label { display: block; font-weight: 700; font-size: 0.78rem; margin-bottom: 5px; color: var(--text-muted); }
+    
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 16px;
+      background-color: var(--card-item-bg);
+      color: var(--text-main);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 16%, transparent);
+    }
+
+    .photo-upload-container {
+      background: var(--primary-light);
+      border: 2px dashed var(--accent-gold);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      text-align: center;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .photo-upload-container:active { background: color-mix(in srgb, var(--primary-light) 60%, var(--accent-gold) 12%); }
+    .photo-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .photo-actions button { flex: 1 1 140px; width: auto; min-height: 40px; margin-top: 0; padding: 8px 10px; font-size: 0.8rem; box-shadow: none; }
+    .btn-gallery { background: linear-gradient(135deg, #4a8fc2, #2f6f9d); }
+    .btn-remove-photo { background: #c23e58; display: none; }
+    .photo-current-label { display: none; color: var(--text-muted); font-size: 0.76rem; margin-top: 8px; }
+
+    .photo-preview {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-top: 8px;
+      display: none;
+      border: 1px solid var(--border-color);
+    }
+
+    .upload-status {
+      font-size: 0.78rem;
+      color: var(--primary);
+      font-weight: 600;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .client-photo-thumb {
+      width: 65px;
+      height: 65px;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1.5px solid var(--primary);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .card-with-photo {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .card-info { flex: 1; }
+
+    button {
+      width: 100%;
+      min-height: 48px;
+      padding: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.1px;
+      cursor: pointer;
+      margin-top: 5px;
+      box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 30%, transparent);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    }
+    button:active { transform: scale(0.98); box-shadow: 0 2px 6px color-mix(in srgb, var(--primary) 25%, transparent); }
+    button:disabled { opacity: 0.65; cursor: default; transform: none; }
+
+    .btn-excel { background: linear-gradient(135deg, #2e9e64, #217a4c); margin-bottom: 15px; box-shadow: 0 4px 12px rgba(46, 158, 100, 0.28); }
+    .btn-cancel-edit { background: var(--text-muted); box-shadow: none; margin-top: 5px; display: none; }
+
+    .search-box { margin-bottom: 15px; }
+    .client-search-wrapper { position: relative; }
+    .client-search-results {
+      display: none;
+      position: absolute;
+      z-index: 20;
+      left: 0;
+      right: 0;
+      top: calc(100% - 8px);
+      max-height: 210px;
+      overflow-y: auto;
+      background: var(--card-item-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      box-shadow: var(--shadow-soft);
+    }
+    .client-search-results.active { display: block; }
+    .client-search-option {
+      display: block;
+      width: 100%;
+      min-height: auto;
+      margin: 0;
+      padding: 10px 12px;
+      border-radius: 0;
+      background: var(--card-item-bg);
+      color: var(--text-main);
+      text-align: left;
+      font-size: 0.82rem;
+      font-weight: 600;
+      box-shadow: none;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .client-search-option:last-child { border-bottom: none; }
+    .client-search-option:hover, .client-search-option:active { background: var(--primary-light); color: var(--primary); }
+    .list-container { max-height: 480px; overflow-y: auto; }
+    .agenda-date-filter {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      margin: 4px 0 14px;
+      padding: 12px;
+      background: var(--primary-light);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+    }
+    .agenda-date-filter .form-group { flex: 1; margin-bottom: 0; }
+    .agenda-date-filter button {
+      width: auto;
+      min-height: 44px;
+      margin: 0;
+      padding: 9px 12px;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+    .agenda-selected-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 10px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+    .agenda-selected-summary strong { color: var(--primary); }
+    .agenda-view-tabs { display:flex; gap:6px; margin: 4px 0 12px; background:var(--tab-bg); padding:4px; border-radius:var(--radius-sm); }
+    .agenda-view-tabs button { flex:1; min-height:40px; margin:0; padding:8px; font-size:0.8rem; box-shadow:none; background:transparent; color:var(--tab-text); }
+    .agenda-view-tabs button.active { background:var(--primary); color:#fff; }
+    .agenda-week-nav { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+    .agenda-week-nav button { width:auto; min-height:38px; margin:0; padding:7px 10px; font-size:0.76rem; box-shadow:none; }
+    .agenda-week-nav strong { flex:1; text-align:center; color:var(--primary); font-size:0.82rem; }
+    .agenda-week-grid { display:grid; grid-template-columns:repeat(7, minmax(92px, 1fr)); gap:8px; overflow-x:auto; padding-bottom:5px; }
+    .agenda-week-day { min-width:92px; background:var(--card-item-bg); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:8px; }
+    .agenda-week-day.today { border-color:var(--accent-gold); box-shadow:0 0 0 2px color-mix(in srgb, var(--accent-gold) 22%, transparent); }
+    .agenda-week-day-header { text-align:center; color:var(--primary); font-size:0.72rem; font-weight:800; margin-bottom:7px; }
+    .agenda-week-count { display:block; color:var(--text-muted); font-size:0.68rem; font-weight:500; margin-top:2px; }
+    .agenda-week-item { padding:7px 6px; margin-top:6px; border-radius:7px; border-left:3px solid var(--primary); background:var(--card-bg); font-size:0.69rem; color:var(--text-main); line-height:1.3; }
+    .agenda-week-item strong { display:block; font-size:0.71rem; }
+    .agenda-month-nav { display:flex; align-items:center; gap:8px; margin: 4px 0 10px; }
+    .agenda-month-nav button { width:auto; min-height:38px; margin:0; padding:7px 10px; font-size:0.76rem; box-shadow:none; }
+    .agenda-month-nav strong { flex:1; text-align:center; color:var(--primary); font-size:0.85rem; }
+    .agenda-month-grid { display:grid; grid-template-columns:repeat(7, minmax(34px, 1fr)); gap:4px; }
+    .agenda-month-weekday { text-align:center; color:var(--text-muted); font-size:0.66rem; font-weight:800; padding:4px 0; }
+    .agenda-month-day { min-height:58px; padding:5px 4px; border:1px solid var(--border-color); border-radius:7px; background:var(--card-item-bg); cursor:pointer; }
+    .agenda-month-day.empty { background:transparent; border-color:transparent; cursor:default; }
+    .agenda-month-day.today { border-color:var(--accent-gold); box-shadow:0 0 0 2px color-mix(in srgb, var(--accent-gold) 22%, transparent); }
+    .agenda-month-day.selected { background:var(--primary-light); border-color:var(--primary); }
+    .agenda-month-day-number { display:block; text-align:right; color:var(--text-main); font-size:0.72rem; font-weight:800; }
+    .agenda-month-count { display:block; margin-top:7px; text-align:center; color:var(--primary); font-size:0.66rem; font-weight:800; }
+    .inactive-summary { color:var(--text-muted); font-size:0.78rem; line-height:1.4; margin-bottom:12px; }
+    .inactive-item { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .inactive-item-info { flex:1; min-width:0; }
+    .inactive-item-info strong { display:block; color:var(--text-main); }
+    .agenda-status { display:inline-block; margin-top:6px; padding:3px 6px; border-radius:999px; font-size:0.64rem; font-weight:800; }
+    .status-confirmado { border-left-color:#2e9e64; } .status-confirmado .agenda-status { background:#dff4e8; color:#217a4c; }
+    .status-aguardando { border-left-color:#d39a28; } .status-aguardando .agenda-status { background:#fbeed4; color:#a96f12; }
+    .status-concluido { border-left-color:#4a8fc2; } .status-concluido .agenda-status { background:#e1eff9; color:#2f6f9d; }
+    .status-cancelado { border-left-color:#c23e58; opacity:.72; } .status-cancelado .agenda-status { background:#fbdfe4; color:#b52e4b; }
+    .status-falta { border-left-color:#d9822b; } .status-falta .agenda-status { background:#fce6d1; color:#a65716; }
+    .agenda-status-legend { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 12px; font-size:0.68rem; color:var(--text-muted); }
+    .agenda-status-legend span { padding:4px 7px; border-radius:999px; background:var(--card-item-bg); border:1px solid var(--border-color); }
+
+    .agenda-empty {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      padding: 24px 12px;
+      background: var(--card-item-bg);
+      border: 1px dashed var(--border-color);
+      border-radius: var(--radius-sm);
+    }
+    @media (max-width: 380px) {
+      .agenda-date-filter { flex-direction: column; align-items: stretch; }
+      .agenda-date-filter button { width: 100%; }
+    }
+
+
+    .item-card {
+      background: var(--card-item-bg);
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      border-left: 4px solid #ccc;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      color: var(--text-main);
+    }
+
+    .item-card.status-ok { border-left-color: #2e9e64; }
+    .item-card.status-expired { border-left-color: #c23e58; }
+    .item-card.agenda-item { border-left-color: #4a8fc2; }
+
+    .action-buttons { display: flex; gap: 6px; margin-top: 10px; justify-content: flex-end; flex-wrap: wrap; }
+    .btn-edit, .btn-delete, .btn-complete, .btn-absent, .btn-confirm-wsp { width: auto; min-height: auto; padding: 7px 11px; font-size: 0.75rem; border-radius: 7px; box-shadow: none; margin-top: 0; }
+    .btn-edit { background: #4a8fc2; }
+    .btn-delete { background: #c23e58; }
+    .btn-complete { background: #2e9e64; }
+    .btn-absent { background: #d9822b; }
+    .btn-confirm-wsp { background: #25d366; color: white; text-decoration: none; display: inline-flex; align-items: center; font-weight: bold; }
+
+    .btn-wsp {
+      display: inline-flex;
+      align-items: center;
+      background: #25d366;
+      color: white;
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: bold;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(23, 14, 18, 0.72);
+      backdrop-filter: blur(3px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active { display: flex; animation: screenIn 0.2s ease; }
+    .modal-card { background: var(--bg-container); color: var(--text-main); padding: 22px; border-radius: var(--radius-lg); text-align: center; max-width: 380px; width: 100%; box-shadow: var(--shadow-soft); }
+    .modal-card h3 { font-family: var(--font-display); font-style: italic; color: var(--primary); font-size: 1.2rem; margin-bottom: 6px; }
+    .qr-img { max-width: 100%; height: auto; border-radius: 10px; margin: 10px 0; }
+    .cita-img { display: block; width: 100%; max-height: 70vh; object-fit: contain; border-radius: 12px; margin: 4px auto 0; }
+    .cita-actions { display: flex; gap: 8px; margin-top: 14px; }
+    .cita-actions button { flex: 1; margin-top: 0; font-size: 0.82rem; }
+    .btn-share-cita { background: linear-gradient(135deg, #25d366, #159447); }
+    .btn-whatsapp-cita { background: linear-gradient(135deg, #25d366, #128c7e); }
+    .share-help { color: var(--text-muted); font-size: 0.78rem; line-height: 1.4; margin-top: 8px; }
+    .full-photo { max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 10px; }
+
+    @media (max-width: 480px) {
+      .form-row { grid-template-columns: 1fr; }
+      .maintenance-item, .bday-item { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .card-with-photo { flex-direction: column; }
+      .client-photo-thumb { width: 100%; height: 140px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+    }
+
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible,
+    .menu-card:focus-visible, .tab-btn:focus-visible, .theme-toggle-btn:focus-visible {
+      outline: 2px solid var(--accent-gold);
+      outline-offset: 2px;
+    }
+
+    .list-container::-webkit-scrollbar { width: 6px; }
+    .list-container::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+
+    /* TELA DE AUTENTICAÇÃO */
+    #authScreen {
+      width: 100%;
+      max-width: 400px;
+      background: var(--bg-container);
+      padding: 32px 24px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+    }
+    #authScreen .header { margin-bottom: 22px; }
+    #authScreen .logo { max-width: 140px; }
+    .auth-subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: -6px;
+      margin-bottom: 20px;
+    }
+    .auth-error {
+      display: none;
+      background: #fbdfe4;
+      color: #9c2c44;
+      border: 1px solid #ecb0bc;
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 0.8rem;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    body.dark-mode .auth-error { background: #3a2029; color: #f2a9bc; border-color: #5c2b38; }
+    .auth-forgot {
+      display: block;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--primary);
+      font-weight: 700;
+      margin-top: 14px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      width: auto;
+      box-shadow: none;
+      padding: 6px;
+    }
+    .auth-success {
+      display: none;
+      background: #dcf2e4;
+      color: #1c6b41;
+      border: 1px solid #a9dcbe;
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 0.8rem;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    body.dark-mode .auth-success { background: #17301f; color: #9bdbb4; border-color: #26492f; }
+
+    /* AÇÕES DO CABEÇALHO (TEMA + SAIR) */
+    .header-actions {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      gap: 8px;
+    }
+    .header-actions .theme-toggle-btn { position: static; }
+    #logoutBtn {
+      background: var(--primary-light);
+      border: 1px solid var(--border-color);
+      color: var(--primary);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      min-height: auto;
+      box-shadow: none;
+      margin-top: 0;
+      transition: transform 0.2s, background-color 0.3s;
+    }
+    #logoutBtn:active { transform: scale(0.88); }
+
+    /* HISTÓRICO DE TRABALHOS */
+    .btn-history { background: var(--accent-gold); color: #3c2c12; }
+    .history-entry {
+      background: var(--card-item-bg);
+      border: 1px solid var(--border-color);
+      border-left: 3px solid var(--accent-gold);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      box-shadow: var(--shadow-card);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TELA DE AUTENTICAÇÃO (EMAIL/SENHA) -->
+  <div id="authScreen" style="display:none;">
+    <div class="header">
+      <img src="logo.png" alt="Logo" class="logo" onerror="this.style.display='none'">
+      <h1>Anna Mendonça Lash Designer</h1>
+      <span class="header-flourish" aria-hidden="true">
+        <svg viewBox="0 0 92 12" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 8 C 20 -2, 34 14, 46 6 S 72 -2, 90 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="46" cy="6" r="1.6" fill="currentColor"/>
+        </svg>
+      </span>
+    </div>
+    <p class="auth-subtitle">Iniciá sesión para gestionar tu estudio</p>
+
+    <div id="authError" class="auth-error"></div>
+    <div id="authSuccess" class="auth-success"></div>
+
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="authEmail">Correo electrónico</label>
+        <input type="email" id="authEmail" required autocomplete="username" placeholder="tu@correo.com">
+      </div>
+      <div class="form-group">
+        <label for="authPassword">Contraseña</label>
+        <input type="password" id="authPassword" required autocomplete="current-password" placeholder="••••••••">
+      </div>
+      <button type="submit" id="loginBtn">Entrar</button>
+    </form>
+    <button type="button" class="auth-forgot" onclick="handlePasswordReset()">¿Olvidaste tu contraseña?</button>
+  </div>
+
+  <div class="container" id="appContainer" style="display:none;">
+    <div class="header">
+      <div class="header-actions">
+        <button type="button" id="logoutBtn" onclick="handleLogout()" title="Cerrar sesión">🚪</button>
+        <button type="button" id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" title="Alternar Modo Nocturno">🌙</button>
+      </div>
+      <img src="logo.png" alt="Logo" class="logo" onerror="this.style.display='none'">
+      <h1>Anna Mendonça Lash Designer</h1>
+      <span class="header-flourish" aria-hidden="true">
+        <svg viewBox="0 0 92 12" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 8 C 20 -2, 34 14, 46 6 S 72 -2, 90 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="46" cy="6" r="1.6" fill="currentColor"/>
+        </svg>
+      </span>
+    </div>
+
+    <!-- TELA INICIAL: MENU PRINCIPAL -->
+    <div id="module-menu" class="module-content active">
+      <div class="dashboard-summary">
+        <h2>✨ Resumo do Estúdio</h2>
+        <div class="dashboard-metrics">
+          <div class="dashboard-metric"><span>Clientes</span><strong id="dashboardClients">0</strong></div>
+          <div class="dashboard-metric"><span>Agendamentos hoje</span><strong id="dashboardTodayAppointments">0</strong></div>
+          <div class="dashboard-metric"><span>Faturamento do mês</span><strong id="dashboardMonthTotal">Gs. 0</strong></div>
+          <div class="dashboard-metric"><span>Manutenções próximas</span><strong id="dashboardMaintenance">0</strong></div>
+        </div>
+        <div id="dashboardNextAppointment" class="dashboard-next">Próximo horário: nenhum agendamento futuro.</div>
+        <div id="dashboardReminders" class="dashboard-reminders"></div>
+      </div>
+      <div class="main-menu-grid">
+        <section class="menu-category">
+          <h3 class="menu-category-title">✨ Dashboard</h3>
+          <div class="menu-category-grid">
+            <div class="menu-card" onclick="openDashboardSummary()"><div class="menu-card-icon">📊</div><div class="menu-card-title">Resumo do Estúdio</div></div>
+            <div id="agendaCard" class="menu-card" onclick="openScreen('module-agenda')"><div class="menu-card-icon">📌</div><div class="menu-card-title">Próximos Horários</div><span class="menu-badge" id="agendaCountBadge" style="display:none;"></span><span class="menu-badge tomorrow-badge" id="agendaTomorrowCountBadge" style="display:none;"></span></div>
+          </div>
+        </section>
+
+        <section class="menu-category">
+          <h3 class="menu-category-title">📅 Agenda</h3>
+          <div class="menu-category-grid">
+            <div class="menu-card" onclick="openScreen('module-agendar')"><div class="menu-card-icon">📅</div><div class="menu-card-title">Agendar / Reservar</div></div>
+            <div id="maintCard" class="menu-card maint-card" onclick="openScreen('module-manutencion')"><span id="maintCountBadge" class="menu-badge" style="display:none;">0</span><div class="menu-card-icon">⏰</div><div class="menu-card-title">Mantenimiento</div></div>
+            <div id="bdayCard" class="menu-card bday-card" onclick="openScreen('module-cumpleanos')"><span id="bdayCountBadge" class="menu-badge" style="display:none;">0</span><div class="menu-card-icon">🎂</div><div class="menu-card-title">Cumpleaños</div></div>
+          </div>
+        </section>
+
+        <section class="menu-category">
+          <h3 class="menu-category-title">👥 Clientes</h3>
+          <div class="menu-category-grid">
+            <div class="menu-card" onclick="openScreen('module-ficha')"><div class="menu-card-icon">📝</div><div class="menu-card-title">Nueva Ficha</div></div>
+            <div class="menu-card" onclick="openScreen('module-inativas')"><div class="menu-card-icon">🔔</div><div class="menu-card-title">Clientes Inativas</div></div>
+            <div class="menu-card" onclick="openScreen('module-top')"><div class="menu-card-icon">🏆</div><div class="menu-card-title">Top 3 Clientes</div></div>
+            <div class="menu-card" onclick="openScreen('module-financeiro'); switchFinTab('clientes')"><div class="menu-card-icon">📖</div><div class="menu-card-title">Lista & Histórico</div></div>
+          </div>
+        </section>
+
+        <section class="menu-category">
+          <h3 class="menu-category-title">💰 Financeiro</h3>
+          <div class="menu-category-grid">
+            <div class="menu-card" onclick="openScreen('module-financeiro'); switchFinTab('finanza')"><div class="menu-card-icon">📊</div><div class="menu-card-title">Faturamento Mensal</div></div>
+            <div class="menu-card" onclick="openScreen('module-financeiro'); switchFinTab('finanza')"><div class="menu-card-icon">📈</div><div class="menu-card-title">Relatório Financeiro</div></div>
+          </div>
+        </section>
+
+        <section class="menu-category">
+          <h3 class="menu-category-title">🧰 Ferramentas</h3>
+          <div class="menu-category-grid">
+            <button type="button" class="menu-card cita-card" onclick="openScreen('module-cita')" aria-label="Abrir CITA"><div class="menu-card-icon">📄</div><div class="menu-card-title">CITA</div></button>
+            <div class="menu-card wifi-card" onclick="openWifiModal()"><div class="menu-card-icon">📶</div><div class="menu-card-title">WIFI Visitas</div></div>
+            <div class="menu-card" onclick="openInstagramModal()"><div class="menu-card-icon">📷</div><div class="menu-card-title">Perfil Instagram</div></div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- TELA: MANUTENÇÃO -->
+    <div id="module-manutencion" class="module-content">
+      <button class="btn-back" onclick="goHome()">⬅ Menú Principal</button>
+      <div class="card">
+        <h2>⏰ Clientes con Mantenimiento Por Vencer (15 a 20 días)</h2>
+        <div id="maintenanceList" class="maintenance-list"></div>
+      </div>
+    </div>
+
+    <!-- TELA: CUMPLEAÑOS -->
+    <div id="module-cumpleanos" class="module-content">
+      <button class="btn-back" onclick="goHome()">⬅ Menú Principal</button>
+      <div class="card">
+        <h2>🎉 Próximos Cumpleaños (Hoy y Mañana)</h2>
+        <div id="bdayList" class="bday-list"></div>
+      </div>
+    </div>
+
+    <!-- TELA: AGENDAR / RESERVAR -->
+    <div id="module-agendar" class="module-content">
+      <button class="btn-back" onclick="goHome()">⬅ Menú Principal</button>
+      <div class="card">
+          <h2 id="appointmentFormTitle">📅 Agendar / Reservar Horario</h2>
+        <form id="appointmentForm">
+          <input type="hidden" id="appointmentId">
+          <div class="form-group">
+            <label for="appClientSearch">Buscar cliente por nombre o teléfono</label>
+            <div class="client-search-wrapper">
+              <input type="search" id="appClientSearch" placeholder="Digite nome ou telefone..." oninput="filterAppointmentClients()" autocomplete="off">
+              <div id="appClientSearchResults" class="client-search-results" role="listbox"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="appClientSelect">Cliente *</label>
+            <select id="appClientSelect" required>
+              <option value="">Cargando clientes...</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="appDate">Fecha de la Cita *</label>
+              <input type="date" id="appDate" required>
+            </div>
+            <div class="form-group">
+              <label for="appTime">Horario *</label>
+              <input type="time" id="appTime" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="appStatus">Status</label>
+              <select id="appStatus">
+                <option value="aguardando">Aguardando confirmação</option>
+                <option value="confirmado">Confirmado</option>
+                <option value="concluido">Concluído</option>
+                <option value="cancelado">Cancelado</option>
+                <option value="falta">Cliente faltou</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="appService">Procedimento</label>
+              <input type="text" id="appService" placeholder="Ej: Vol Brasileño + Cejas">
+            </div>
+            <div class="form-group">
+              <label for="appDeposit">Seña (Gs.)</label>
+              <input type="number" id="appDeposit" step="any" min="0" placeholder="Ej: 50000">
+            </div>
+          </div>
+          <button type="submit" id="btnSaveAppointment">Confirmar Agendamiento</button>
+          <button type="button" class="btn-cancel-edit" id="btnCancelAppointmentEdit" onclick="resetAppointmentForm()">Cancelar Edición</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- TELA: NOVA FICHA -->
+    <div id="module-ficha" class="module-content">
+      <button class="btn-back" onclick="goHome()">⬅ Menú Principal</button>
+      <div class="card">
+        <h2 id="formTitle">📝 Nueva Ficha / Servicio Realizado</h2>
+
+        <!-- HISTORIAL DE LOS ÚLTIMOS TRABAJOS (visible al editar una clienta existente) -->
+        <div id="fichaHistoryPanel" style="display:none; margin-bottom:16px;">
+          <label style="margin-bottom:8px;">📜 Últimos Trabajos de esta Clienta</label>
+          <div id="fichaHistoryList" style="display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
+
+        <form id="clientForm">
+          <input type="hidden" id="clientId">
+          <input type="hidden" id="appointmentIdToClear">
+          <input type="hidden" id="photoUrl">
+
+          <div class="form-group">
+            <label for="name">Nombre de la Clienta *</label>
+            <input type="text" id="name" required placeholder="Ej: María López">
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone">WhatsApp / Tel *</label>
+              <input type="tel" id="phone" required placeholder="Ej: 0981123456">
+            </div>
+            <!-- CAMPO: FECHA CUMPLEAÑOS -->
+            <div class="form-group">
+              <label for="birthday">Fecha de Cumpleaños 🎂</label>
+              <input type="date" id="birthday">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="serviceDate">Fecha de Aplicación</label>
+              <input type="date" id="serviceDate">
+            </div>
+            <div class="form-group">
+              <label for="price">Monto Cobrado (Gs.)</label>
+              <input type="number" id="price" step="any" min="0" placeholder="Ej: 150000">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="technique">Pestañas</label>
+              <select id="technique">
+                <option value="Sin servicio">Sin servicio</option>
+                <option value="Rimel Soft">Rimel Soft</option>
+                <option value="Efecto Rímel">Efecto Rímel</option>
+                <option value="Vol Brasileño">Vol Brasileño</option>
+                <option value="Vol Egipcio">Vol Egipcio</option>
+                <option value="Mega Volumen">Mega Volumen</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="cejas">Cejas</label>
+              <select id="cejas">
+                <option value="Sin servicio" selected>Sin servicio</option>
+                <option value="Henna">Henna</option>
+                <option value="Diseño de cejas">Diseño de cejas</option>
+                <option value="Brow Lamination">Brow Lamination</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="removal">Retiro</label>
+            <select id="removal">
+              <option value="No" selected>No</option>
+              <option value="Sí">Sí</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="curvature">Curvatura</label>
+              <select id="curvature">
+                <option value="C">C</option>
+                <option value="CC">CC</option>
+                <option value="D">D</option>
+                <option value="DD">DD</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="thickness">Espesor</label>
+              <select id="thickness">
+                <option value="0.05mm">0.05 mm</option>
+                <option value="0.07mm" selected>0.07 mm</option>
+                <option value="0.10mm">0.10 mm</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="mapping">Mapeo</label>
+              <input type="text" id="mapping" placeholder="Ej: Cat Eyes 8-12mm">
+            </div>
+            <div class="form-group">
+              <label for="adhesive">Adhesivo / Pegamento</label>
+              <input type="text" id="adhesive" placeholder="Ej: Elite HS-16">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="visitCount">Visitas Acumuladas</label>
+            <input type="number" id="visitCount" min="1" value="1">
+          </div>
+
+          <div class="form-group">
+            <label for="notes">Observaciones / Alergias</label>
+            <textarea id="notes" rows="2"></textarea>
+          </div>
+
+          <button type="submit" id="btnSaveClient">Guardar en la Nube</button>
+          <button type="button" class="btn-cancel-edit" id="btnCancelEdit" onclick="resetClientForm()">Cancelar Edición</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- TELA: AGENDA DIÁRIA E SEMANAL -->
+    <div id="module-agenda" class="module-content">
+      <button class="btn-back" onclick="goHome()">⬅ Menú Principal</button>
+      <div class="card">
+        <h2>📌 Agenda</h2>
+        <div id="agendaTodayAlert" class="agenda-today-alert hidden" role="status" aria-live="polite">
+          <span class="agenda-alert-led" aria-hidden="true"></span><span id="agendaTodayMessage"></span>
+        </div>
+        <div id="agendaTomorrowAlert" class="agenda-tomorrow-alert hidden" role="status" aria-live="polite">
+          <span class="agenda-tomorrow-led" aria-hidden="true"></span><span id="agendaTomorrowMessage"></span>
+        </div>
+        <div class="agenda-view-tabs">
+          <button type="button" id="agendaDailyTab" class="active" onclick="switchAgendaView('daily')">📅 Diário</button>
+          <button type="button" id="agendaWeeklyTab" onclick="switchAgendaView('weekly')">🗓️ Semanal</button>
+          <button type="button" id="agendaMonthlyTab" onclick="switchAgendaView('monthly')">📆 Mensal</button>
+        </div>
+        <div class="agenda-date-filter">
+          <div class="form-group"><label for="agendaDateFilter">Selecionar data</label><input type="date" id="agendaDateFilter" onchange="renderAppointments()" aria-label="Data da agenda"></div>
+          <button type="button" onclick="selectAgendaToday()">Hoje</button>
+        </div>
+        <div id="agendaDailyView">
+          <div class="agenda-selected-summary"><span id="agendaSelectedDateLabel"></span><strong id="agendaSelectedCount"></strong></div>
+          <div class="agenda-status-legend"><span>● Confirmado</span><span>● Aguardando</span><span>● Concluído</span><span>● Cancelado</span><span>● Faltou</span></div>
+          <div class="list-container" id="appointmentList"></div>
+        </div>
+        <div id="agendaWeeklyView" style="display:none;">
+          <div class="agenda-week-nav"><button type="button" onclick="changeAgendaWeek(-1)">‹ Anterior</button><strong id="agendaWeekLabel"></strong><button type="button" onclick="changeAgendaWeek(1)">Próxima ›</button></div>
+          <div class="agenda-week-grid" id="agendaWeekGrid"></div>
+        </div>
+        <div id="agendaMonthlyView" style="display:none;">
+          <div class="agenda-month-nav"><button type="button" onclick="changeAgendaMonth(-1)">‹ Anterior</button><strong id="agendaMonthLabel"></strong><button type="button" onclick="changeAgendaMonth(1)">Próximo ›</button></div>
+          <div class="agenda-month-grid" id="agendaMonthGrid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA: CLIENTES INATIVAS -->
+    <div id="module-inativas" class="module-content">
+      <button class="btn-back" onclick="goHome()">⬅ Menú Principal</button>
+      <div class="card">
+        <h2>🔔 Clientes Inativas</h2>
+        <p class="inactive-summary">Clientes sem atendimento há 30 dias ou mais. Envie uma mensagem para convidá-las a retornar.</p>
+        <div class="form-group">
+          <label for="inactivePeriodSelect">Mostrar sem atendimento há</label>
+          <select id="inactivePeriodSelect" onchange="renderInactiveClients()">
+            <option value="30">30 dias ou mais</option>
+            <option value="60">60 dias ou mais</option>
+            <option value="90">90 dias ou mais</option>
+          </select>
+        </div>
+        <div id="inactiveClientsList" class="maintenance-list"></div>
+      </div>
+    </div>
+
+    <!-- TELA: TOP 3 CLIENTES -->
+    <div id="module-top" class="module-content">
+      <button class="btn-back" onclick="goHome()">⬅ Menú Principal</button>
+      <div class="card">
+        <h2>🏆 Top 3 Clientes con Más Visitas</h2>
+        <div class="top-clients-grid" id="topClientsList"></div>
+      </div>
+    </div>
+
+    <!-- TELA: HISTÓRICO & FINANCEIRO -->
+    <div id="module-financeiro" class="module-content">
+      <button class="btn-back" onclick="goHome()">⬅ Menú Principal</button>
+      
+      <div class="tab-container">
+        <button type="button" id="tabBtnFinanzas" class="tab-btn active" onclick="switchFinTab('finanza')">📊 Finanzas</button>
+        <button type="button" id="tabBtnClientes" class="tab-btn" onclick="switchFinTab('clientes')">👥 Clientes</button>
+      </div>
+
+      <!-- ABA 1: FINANZAS -->
+      <div id="tabContentFinanza" class="tab-content active">
+        <div class="card">
+          <h2>📊 Resumen Financiero</h2>
+          <div class="finance-filter">
+            <div class="form-group">
+              <label for="financeMonthSelect">Mês</label>
+              <select id="financeMonthSelect" onchange="updateFinancials()" aria-label="Mês do relatório"></select>
+            </div>
+            <div class="form-group">
+              <label for="financeYearSelect">Ano</label>
+              <select id="financeYearSelect" onchange="updateFinancials()" aria-label="Ano do relatório"></select>
+            </div>
+          </div>
+          <p id="financePeriodNote" class="finance-note"></p>
+          <div class="financial-summary">
+            <div class="fin-card">
+              <span>Facturación del Período</span>
+              <strong id="monthTotal">Gs. 0</strong>
+            </div>
+            <div class="fin-card">
+              <span>Atendimientos</span>
+              <strong id="monthAppointments">0</strong>
+            </div>
+            <div class="fin-card">
+              <span>Ticket Medio</span>
+              <strong id="monthAverage">Gs. 0</strong>
+            </div>
+            <div class="fin-card">
+              <span>Procedimiento Más Realizado</span>
+              <strong id="topProcedure" class="fin-detail">—</strong>
+            </div>
+          </div>
+          <button type="button" class="btn-excel" onclick="exportToExcel()">📊 Exportar Reporte (.csv)</button>
+        </div>
+      </div>
+
+      <!-- ABA 2: CLIENTES -->
+      <div id="tabContentClientes" class="tab-content">
+        <div class="card">
+          <h2>👥 Lista de Clientes & Historial</h2>
+          <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Buscar por clienta, técnica o teléfono..." oninput="filterClients()">
+          </div>
+          <div class="list-container" id="clientList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA: CITA -->
+    <div id="module-cita" class="module-content">
+      <button class="btn-back" onclick="goHome()">⬅ Menú Principal</button>
+      <div class="card">
+        <h2>📄 CITA</h2>
+        <img src="./cita.png" alt="CITA" class="cita-img" onerror="this.alt='Não foi possível carregar cita.png. Verifique se o arquivo está na mesma pasta do index.html.'; this.style.border='2px dashed var(--accent-gold)';">
+        <div class="cita-actions">
+          <button type="button" class="btn-share-cita" onclick="openCitaShareModal()">📤 Encaminhar</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- POPUP WI-FI -->
+  <div id="wifiModal" class="modal-overlay" onclick="closeWifiModal()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <h3>📶 Wi-Fi Visitas</h3>
+      <p style="font-size:0.85rem; color:var(--text-muted);">Apunta la cámara para conectar:</p>
+      <img src="wifi.png" alt="QR Code Wi-Fi" class="qr-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300?text=Foto+wifi.png+nao+encontrada';">
+      <button type="button" style="background:#7f8c8d; margin-top:10px;" onclick="closeWifiModal()">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- POPUP PERFIL INSTAGRAM -->
+  <div id="instagramModal" class="modal-overlay" onclick="closeInstagramModal()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <h3>📷 Perfil Instagram</h3>
+      <p style="font-size:0.85rem; color:var(--text-muted);">Aponte a câmera para acessar o perfil:</p>
+      <img src="instagram-qrcode.png" alt="QR Code do Perfil Instagram" class="qr-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300?text=Adicione+instagram-qrcode.png';">
+      <button type="button" style="background:#7f8c8d; margin-top:10px;" onclick="closeInstagramModal()">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- POPUP PARA ENCAMINHAR A CITA -->
+  <div id="citaShareModal" class="modal-overlay" onclick="closeCitaShareModal()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <h3>📤 Encaminhar CITA</h3>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">Escolha a cliente para abrir o WhatsApp:</p>
+      <div class="form-group" style="text-align:left;">
+        <label for="citaClientSearch">Buscar por nombre o teléfono</label>
+        <div class="client-search-wrapper">
+          <input type="search" id="citaClientSearch" placeholder="Digite nome ou telefone..." oninput="filterCitaClients()" autocomplete="off">
+          <div id="citaClientSearchResults" class="client-search-results" role="listbox"></div>
+        </div>
+      </div>
+      <div class="form-group" style="text-align:left;">
+        <label for="citaClientSelect">Cliente</label>
+        <select id="citaClientSelect" onchange="updateCitaShareButtons()">
+          <option value="">Selecione uma clienta...</option>
+        </select>
+      </div>
+      <button type="button" class="btn-whatsapp-cita" id="citaWhatsAppBtn" onclick="openCitaWhatsApp()" disabled>💬 Abrir WhatsApp</button>
+      <button type="button" class="btn-share-cita" id="citaShareBtn" onclick="shareCitaImage()" disabled>📎 Compartilhar imagem</button>
+      <p class="share-help">“Abrir WhatsApp” seleciona a conversa da cliente. “Compartilhar imagem” permite enviar a imagem diretamente nos aparelhos compatíveis.</p>
+      <button type="button" style="background:#7f8c8d; margin-top:12px;" onclick="closeCitaShareModal()">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- MODAL ZOOM DA FOTO -->
+  <div id="photoZoomModal" class="modal-overlay" onclick="closePhotoZoomModal()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <img id="zoomedPhoto" class="full-photo" src="" alt="Foto Ampliada">
+      <button type="button" style="background:#7f8c8d; margin-top:12px;" onclick="closePhotoZoomModal()">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- MODAL HISTORIAL DE TRABAJOS -->
+  <div id="historyModal" class="modal-overlay" onclick="closeHistoryModal()">
+    <div class="modal-card" style="max-width:420px; text-align:left;" onclick="event.stopPropagation()">
+      <h3 style="text-align:center;">📜 Historial de Trabajos</h3>
+      <p id="historyClientName" style="text-align:center; color:var(--text-muted); font-size:0.85rem; margin-bottom:14px;"></p>
+      <div id="historyList" style="display:flex; flex-direction:column; gap:10px; max-height:50vh; overflow-y:auto;"></div>
+      <button type="button" style="background:#7f8c8d; margin-top:14px;" onclick="closeHistoryModal()">Cerrar</button>
+    </div>
+  </div>
+
+  <script>
+    // FIREBASE CONFIG
+    const firebaseConfig = {
+      apiKey: "AIzaSyBFe4xeRmCeaSQGycdAPFCyXrJBFmkqNb4",
+      authDomain: "anna-lash-designer.firebaseapp.com",
+      databaseURL: "https://anna-lash-designer-default-rtdb.firebaseio.com",
+      projectId: "anna-lash-designer",
+      storageBucket: "anna-lash-designer.firebasestorage.app",
+      messagingSenderId: "771186076339",
+      appId: "1:771186076339:web:2e8551f9b0b86adaab1ec6",
+      measurementId: "G-KC2RG86KPS"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    let clients = [];
+    let appointments = [];
+    let selectedFile = null;
+    let photoRemoveRequested = false;
+
+    const form = document.getElementById('clientForm');
+    const appointmentForm = document.getElementById('appointmentForm');
+    const clientList = document.getElementById('clientList');
+    const appointmentList = document.getElementById('appointmentList');
+    const agendaCard = document.getElementById('agendaCard');
+    const agendaCountBadge = document.getElementById('agendaCountBadge');
+    const agendaTomorrowCountBadge = document.getElementById('agendaTomorrowCountBadge');
+    const agendaTodayAlert = document.getElementById('agendaTodayAlert');
+    const agendaTodayMessage = document.getElementById('agendaTodayMessage');
+    const agendaTomorrowAlert = document.getElementById('agendaTomorrowAlert');
+    const agendaTomorrowMessage = document.getElementById('agendaTomorrowMessage');
+    const agendaDailyTab = document.getElementById('agendaDailyTab');
+    const agendaWeeklyTab = document.getElementById('agendaWeeklyTab');
+    const agendaMonthlyTab = document.getElementById('agendaMonthlyTab');
+    const agendaDailyView = document.getElementById('agendaDailyView');
+    const agendaWeeklyView = document.getElementById('agendaWeeklyView');
+    const agendaMonthlyView = document.getElementById('agendaMonthlyView');
+    const agendaWeekGrid = document.getElementById('agendaWeekGrid');
+    const agendaWeekLabel = document.getElementById('agendaWeekLabel');
+    const agendaMonthGrid = document.getElementById('agendaMonthGrid');
+    const agendaMonthLabel = document.getElementById('agendaMonthLabel');
+    let agendaView = 'daily';
+    let agendaWeekOffset = 0;
+    let agendaMonthOffset = 0;
+    const agendaDateFilter = document.getElementById('agendaDateFilter');
+    const agendaSelectedDateLabel = document.getElementById('agendaSelectedDateLabel');
+    const agendaSelectedCount = document.getElementById('agendaSelectedCount');
+    const appClientSelect = document.getElementById('appClientSelect');
+    const topClientsList = document.getElementById('topClientsList');
+
+    document.getElementById('serviceDate').valueAsDate = new Date();
+    document.getElementById('appDate').valueAsDate = new Date();
+    agendaDateFilter.value = getTodayDateKey();
+    initializeFinancePeriodSelectors();
+
+    // INICIALIZAÇÃO DE TEMA (MODO NOTURNO)
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('themeToggleBtn').textContent = '☀️';
+      }
+    });
+
+    /* ==================== AUTENTICAÇÃO (EMAIL / SENHA) ==================== */
+
+    const authScreen = document.getElementById('authScreen');
+    const appContainer = document.getElementById('appContainer');
+    const authError = document.getElementById('authError');
+    const authSuccess = document.getElementById('authSuccess');
+
+    function showAuthMessage(el, message) {
+      authError.style.display = 'none';
+      authSuccess.style.display = 'none';
+      el.textContent = message;
+      el.style.display = 'block';
+    }
+
+    function translateAuthError(code) {
+      const map = {
+        'auth/invalid-email': 'El correo electrónico no es válido.',
+        'auth/user-disabled': 'Esta cuenta fue deshabilitada.',
+        'auth/user-not-found': 'No existe una cuenta con ese correo.',
+        'auth/wrong-password': 'Contraseña incorrecta.',
+        'auth/invalid-credential': 'Correo o contraseña incorrectos.',
+        'auth/missing-password': 'Ingresá tu contraseña.',
+        'auth/too-many-requests': 'Demasiados intentos. Probá de nuevo en unos minutos.',
+        'auth/network-request-failed': 'Sin conexión a internet. Verificá tu red.'
+      };
+      return map[code] || 'Ocurrió un error al iniciar sesión. Intentá nuevamente.';
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('authEmail').value.trim();
+      const password = document.getElementById('authPassword').value;
+      const btn = document.getElementById('loginBtn');
+
+      authError.style.display = 'none';
+      authSuccess.style.display = 'none';
+      btn.disabled = true;
+      btn.textContent = 'Ingresando...';
+
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        // onAuthStateChanged se encarga de mostrar la app
+      } catch (err) {
+        console.error(err);
+        showAuthMessage(authError, translateAuthError(err.code));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Entrar';
+      }
+    }
+
+    async function handlePasswordReset() {
+      const email = document.getElementById('authEmail').value.trim();
+      if (!email) {
+        showAuthMessage(authError, 'Escribí tu correo electrónico arriba y tocá de nuevo en "¿Olvidaste tu contraseña?".');
+        return;
+      }
+      try {
+        await auth.sendPasswordResetEmail(email);
+        showAuthMessage(authSuccess, `Te enviamos un correo a ${email} para restablecer tu contraseña.`);
+      } catch (err) {
+        console.error(err);
+        showAuthMessage(authError, translateAuthError(err.code));
+      }
+    }
+
+    async function handleLogout() {
+      if (!confirm('¿Cerrar sesión?')) return;
+      try {
+        await auth.signOut();
+      } catch (err) {
+        console.error(err);
+        alert('Error al cerrar sesión: ' + err.message);
+      }
+    }
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        authScreen.style.display = 'none';
+        appContainer.style.display = 'block';
+        document.getElementById('loginForm').reset();
+        attachFirestoreListeners();
+        goHome();
+      } else {
+        detachFirestoreListeners();
+        appContainer.style.display = 'none';
+        authScreen.style.display = 'block';
+      }
+    });
+
+    /* ==================== FIM AUTENTICAÇÃO ==================== */
+
+    function toggleTheme() {
+      const body = document.body;
+      const btn = document.getElementById('themeToggleBtn');
+      body.classList.toggle('dark-mode');
+      
+      if (body.classList.contains('dark-mode')) {
+        localStorage.setItem('theme', 'dark');
+        btn.textContent = '☀️';
+      } else {
+        localStorage.setItem('theme', 'light');
+        btn.textContent = '🌙';
+      }
+    }
+
+    function openScreen(screenId) {
+      document.querySelectorAll('.module-content').forEach(mod => mod.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    function goHome() { openScreen('module-menu'); }
+    function openDashboardSummary() {
+      goHome();
+      const summary = document.querySelector('.dashboard-summary');
+      if (!summary) return;
+      summary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      summary.classList.remove('highlight');
+      void summary.offsetWidth;
+      summary.classList.add('highlight');
+    }
+    function openWifiModal() { document.getElementById('wifiModal').classList.add('active'); }
+    function closeWifiModal() { document.getElementById('wifiModal').classList.remove('active'); }
+    function openInstagramModal() { document.getElementById('instagramModal').classList.add('active'); }
+    function closeInstagramModal() { document.getElementById('instagramModal').classList.remove('active'); }
+
+    function normalizeSearchText(value) {
+      return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    }
+
+    function clientMatchesSearch(client, query) {
+      const textQuery = normalizeSearchText(query);
+      if (!textQuery) return true;
+      const name = normalizeSearchText(client.name);
+      const phone = String(client.phone || '').replace(/\D/g, '');
+      const numericQuery = textQuery.replace(/\D/g, '');
+      return name.includes(textQuery) || (numericQuery && phone.includes(numericQuery));
+    }
+
+    function renderClientSearchResults(containerId, filteredClients, query, onSelect) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      if (!String(query || '').trim()) {
+        container.classList.remove('active');
+        return;
+      }
+
+      if (filteredClients.length === 0) {
+        const empty = document.createElement('div');
+        empty.textContent = 'Nenhuma cliente encontrada';
+        empty.style.cssText = 'padding:10px 12px; color:var(--text-muted); font-size:0.8rem;';
+        container.appendChild(empty);
+      } else {
+        filteredClients.slice(0, 10).forEach(client => {
+          const option = document.createElement('button');
+          option.type = 'button';
+          option.className = 'client-search-option';
+          option.textContent = `${client.name || 'Cliente'}${client.phone ? ` — ${client.phone}` : ' — sem telefone'}`;
+          option.addEventListener('click', () => onSelect(client));
+          container.appendChild(option);
+        });
+      }
+      container.classList.add('active');
+    }
+
+    function populateCitaClientOptions(filteredClients) {
+      const select = document.getElementById('citaClientSelect');
+      const previousValue = select.value;
+      select.innerHTML = '<option value="">Selecione uma clienta...</option>';
+
+      filteredClients
+        .slice()
+        .sort((a, b) => (a.name || '').localeCompare(b.name || '', 'pt-BR'))
+        .forEach(client => {
+          const option = document.createElement('option');
+          option.value = client.id;
+          option.textContent = `${client.name || 'Cliente'}${client.phone ? ` — ${client.phone}` : ' — sem WhatsApp cadastrado'}`;
+          select.appendChild(option);
+        });
+
+      if (filteredClients.some(client => client.id === previousValue)) select.value = previousValue;
+      updateCitaShareButtons();
+    }
+
+    function openCitaShareModal() {
+      document.getElementById('citaClientSearch').value = '';
+      document.getElementById('citaClientSearchResults').classList.remove('active');
+      populateCitaClientOptions(clients);
+      updateCitaShareButtons();
+      document.getElementById('citaShareModal').classList.add('active');
+    }
+
+    function filterCitaClients() {
+      const query = document.getElementById('citaClientSearch').value;
+      const filteredClients = clients.filter(client => clientMatchesSearch(client, query));
+      populateCitaClientOptions(filteredClients);
+      renderClientSearchResults('citaClientSearchResults', filteredClients, query, client => {
+        document.getElementById('citaClientSearch').value = client.name || '';
+        document.getElementById('citaClientSelect').value = client.id;
+        document.getElementById('citaClientSearchResults').classList.remove('active');
+        updateCitaShareButtons();
+      });
+    }
+
+    function closeCitaShareModal() {
+      document.getElementById('citaShareModal').classList.remove('active');
+      document.getElementById('citaClientSearchResults').classList.remove('active');
+    }
+
+    function getSelectedCitaClient() {
+      const clientId = document.getElementById('citaClientSelect').value;
+      return clients.find(client => client.id === clientId) || null;
+    }
+
+    function updateCitaShareButtons() {
+      const client = getSelectedCitaClient();
+      const hasPhone = Boolean(client && formatWhatsAppPhone(client.phone));
+      document.getElementById('citaWhatsAppBtn').disabled = !hasPhone;
+      document.getElementById('citaShareBtn').disabled = !client;
+    }
+
+    function citaMessage(client) {
+      return `Hola ${client.name || ''}, te envío las indicaciones importantes para tu cita. ¡Te esperamos!`;
+    }
+
+    function openCitaWhatsApp() {
+      const client = getSelectedCitaClient();
+      const phone = client && formatWhatsAppPhone(client.phone);
+      if (!client || !phone) return;
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(citaMessage(client))}`, '_blank', 'noopener');
+    }
+
+    async function downloadCitaImage() {
+      const response = await fetch('cita.png');
+      if (!response.ok) throw new Error('Imagem cita.png não encontrada');
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'cita.png';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    async function shareCitaImage() {
+      const client = getSelectedCitaClient();
+      if (!client) return;
+
+      try {
+        const response = await fetch('cita.png');
+        if (!response.ok) throw new Error('Imagem cita.png não encontrada');
+        const blob = await response.blob();
+        const file = new File([blob], 'cita.png', { type: blob.type || 'image/png' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+          await navigator.share({
+            files: [file],
+            title: 'CITA',
+            text: citaMessage(client)
+          });
+        } else {
+          await downloadCitaImage();
+          openCitaWhatsApp();
+          alert('A imagem cita.png foi baixada. No WhatsApp, toque no clipe ou no botão +, escolha Galeria/Fotos e selecione cita.png.');
+        }
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          downloadCitaImage().catch(() => {});
+          openCitaWhatsApp();
+          alert('O WhatsApp foi aberto. A imagem cita.png foi baixada; anexe-a pelo clipe ou botão + da conversa.');
+        }
+      }
+    }
+
+    function openPhotoZoomModal(photoUrl) {
+      document.getElementById('zoomedPhoto').src = photoUrl;
+      document.getElementById('photoZoomModal').classList.add('active');
+    }
+    function closePhotoZoomModal() {
+      document.getElementById('photoZoomModal').classList.remove('active');
+    }
+
+    function formatWhatsAppPhone(phone) {
+      if (!phone) return '';
+      let cleaned = phone.replace(/\D/g, '');
+      if (cleaned.startsWith('0')) cleaned = cleaned.substring(1);
+      if (!cleaned.startsWith('595')) cleaned = '595' + cleaned;
+      return cleaned;
+    }
+
+    /* FOTO UPLOAD LOGIC */
+    function handlePhotoSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      selectedFile = file;
+      photoRemoveRequested = false;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const preview = document.getElementById('photoPreview');
+        preview.src = event.target.result;
+        preview.style.display = 'block';
+        document.getElementById('photoCurrentLabel').style.display = 'block';
+        document.getElementById('photoCurrentLabel').textContent = 'Nova foto selecionada';
+        document.getElementById('btnRemovePhoto').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeClientPhoto() {
+      selectedFile = null;
+      photoRemoveRequested = true;
+      document.getElementById('photoUrl').value = '';
+      document.getElementById('photoCameraInput').value = '';
+      document.getElementById('photoGalleryInput').value = '';
+      document.getElementById('photoPreview').removeAttribute('src');
+      document.getElementById('photoPreview').style.display = 'none';
+      document.getElementById('photoCurrentLabel').style.display = 'none';
+      document.getElementById('btnRemovePhoto').style.display = 'none';
+    }
+
+    function compressPhotoForUpload(file) {
+      if (!file || file.size <= 2 * 1024 * 1024 || !file.type.startsWith('image/')) return Promise.resolve(file);
+
+      return new Promise(resolve => {
+        const image = new Image();
+        const objectUrl = URL.createObjectURL(file);
+        image.onload = () => {
+          const maxSize = 1600;
+          const scale = Math.min(1, maxSize / Math.max(image.naturalWidth, image.naturalHeight));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+          canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+          canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob(blob => {
+            URL.revokeObjectURL(objectUrl);
+            resolve(blob ? new File([blob], 'foto-cliente.jpg', { type: 'image/jpeg' }) : file);
+          }, 'image/jpeg', 0.82);
+        };
+        image.onerror = () => {
+          URL.revokeObjectURL(objectUrl);
+          resolve(file);
+        };
+        image.src = objectUrl;
+      });
+    }
+
+    async function uploadPhotoToStorage(file) {
+      const status = document.getElementById('uploadStatus');
+      status.textContent = '⏳ Preparando e enviando imagem...';
+      status.style.display = 'block';
+      let timeoutId;
+
+      try {
+        const uploadFile = await compressPhotoForUpload(file);
+        const fileRef = storage.ref().child(`clients_photos/${Date.now()}_${uploadFile.name}`);
+        const uploadTask = fileRef.put(uploadFile).then(() => fileRef.getDownloadURL());
+        const timeout = new Promise((_, reject) => {
+          timeoutId = setTimeout(() => reject(new Error('O upload demorou demais. Verifique sua internet e tente novamente.')), 60000);
+        });
+        return await Promise.race([uploadTask, timeout]);
+      } finally {
+        clearTimeout(timeoutId);
+        status.style.display = 'none';
+      }
+    }
+
+    /* ABAS DE FINANÇAS E CLIENTES */
+    function switchFinTab(tabName) {
+      document.getElementById('tabBtnFinanzas').classList.remove('active');
+      document.getElementById('tabBtnClientes').classList.remove('active');
+      document.getElementById('tabContentFinanza').classList.remove('active');
+      document.getElementById('tabContentClientes').classList.remove('active');
+
+      if (tabName === 'finanza') {
+        document.getElementById('tabBtnFinanzas').classList.add('active');
+        document.getElementById('tabContentFinanza').classList.add('active');
+      } else {
+        document.getElementById('tabBtnClientes').classList.add('active');
+        document.getElementById('tabContentClientes').classList.add('active');
+      }
+    }
+
+    /* FIREBASE LISTENERS & RENDER FUNCTIONS */
+    let listenersAttached = false;
+    let unsubscribeClients = null;
+    let unsubscribeAppointments = null;
+
+    function attachFirestoreListeners() {
+      if (listenersAttached) return;
+      listenersAttached = true;
+
+      unsubscribeClients = db.collection('clients').orderBy('serviceDate', 'desc').onSnapshot(snapshot => {
+        clients = [];
+        snapshot.forEach(doc => {
+          clients.push({ id: doc.id, ...doc.data() });
+        });
+        renderClients(clients);
+        updateFinancials();
+        updateTopClients();
+        updateMaintenanceAlerts();
+        updateBirthdayAlerts();
+        renderInactiveClients();
+        updateDashboard();
+        updateClientSelectOptions();
+      }, err => {
+        console.error('Error al escuchar clients:', err);
+      });
+
+      unsubscribeAppointments = db.collection('appointments').orderBy('date', 'asc').onSnapshot(snapshot => {
+        appointments = [];
+        snapshot.forEach(doc => {
+          appointments.push({ id: doc.id, ...doc.data() });
+        });
+        renderAppointments();
+        if (agendaView === 'weekly') renderWeeklyAgenda();
+        if (agendaView === 'monthly') renderMonthlyAgenda();
+        updateAgendaAlerts();
+        updateDashboard();
+      }, err => {
+        console.error('Error al escuchar appointments:', err);
+      });
+    }
+
+    function detachFirestoreListeners() {
+      if (unsubscribeClients) unsubscribeClients();
+      if (unsubscribeAppointments) unsubscribeAppointments();
+      unsubscribeClients = null;
+      unsubscribeAppointments = null;
+      listenersAttached = false;
+      clients = [];
+      appointments = [];
+    }
+
+    function renderClients(dataToRender) {
+      clientList.innerHTML = '';
+      if (dataToRender.length === 0) {
+        clientList.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem;">Ninguna clienta registrada.</p>';
+        return;
+      }
+
+      dataToRender.forEach(client => {
+        let cardClass = 'item-card status-ok';
+        let maintenanceText = '';
+
+        if (client.serviceDate) {
+          const lastDate = new Date(client.serviceDate);
+          const today = new Date();
+          const diffTime = today - lastDate;
+          const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+          if (diffDays > 20) {
+            cardClass = 'item-card status-expired';
+            maintenanceText = `<br><span style="color:#e74c3c; font-weight:bold;">⚠️ Mantenimiento Vencido (${diffDays} días)</span>`;
+          } else {
+            maintenanceText = `<br><span style="color:#27ae60;">Al día (${diffDays} días)</span>`;
+          }
+        }
+
+        const wspNum = formatWhatsAppPhone(client.phone);
+        const wspLink = wspNum ? `https://wa.me/${wspNum}?text=${encodeURIComponent('Hola ' + client.name + ', ¿cómo estás? ¡Pasando a recordarte tu mantenimiento de pestañas!')}` : '#';
+
+        const div = document.createElement('div');
+        div.className = cardClass;
+        div.innerHTML = `
+          <div class="${client.photoUrl ? 'card-with-photo' : ''}">
+            ${client.photoUrl ? `<img src="${client.photoUrl}" class="client-photo-thumb" onclick="openPhotoZoomModal('${client.photoUrl}')">` : ''}
+            <div class="card-info">
+              <strong>${client.name}</strong><br>
+              📞 ${client.phone} ${wspNum ? `<a href="${wspLink}" target="_blank" class="btn-wsp">💬 WhatsApp</a>` : ''}<br>
+              🗓️ Fecha: ${client.serviceDate || 'N/A'}<br>
+              👁️ Pestañas: ${client.technique || 'N/A'} | Cejas: ${client.cejas || 'Sin servicio'}<br>
+              💰 Monto: Gs. ${Number(client.price || 0).toLocaleString('es-PY')} | 🔄 Visitas: ${client.visitCount || 1}
+              ${client.notes ? `<br>📝 Obs: ${client.notes}` : ''}
+              ${maintenanceText}
+              <div class="action-buttons">
+                <button class="btn-history" onclick="openHistoryModal('${client.id}')">📜 Historial</button>
+                <button class="btn-edit" onclick="editClient('${client.id}')">Editar</button>
+                <button class="btn-delete" onclick="deleteClient('${client.id}')">Eliminar</button>
+              </div>
+            </div>
+          </div>
+        `;
+        clientList.appendChild(div);
+      });
+    }
+
+    function filterClients() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = clients.filter(c => 
+        c.name.toLowerCase().includes(query) || 
+        (c.phone && c.phone.includes(query)) || 
+        (c.technique && c.technique.toLowerCase().includes(query))
+      );
+      renderClients(filtered);
+    }
+
+    function initializeFinancePeriodSelectors() {
+      const monthSelect = document.getElementById('financeMonthSelect');
+      const yearSelect = document.getElementById('financeYearSelect');
+      const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      const today = new Date();
+
+      monthSelect.innerHTML = monthNames.map((month, index) => `<option value="${String(index + 1).padStart(2, '0')}">${month}</option>`).join('');
+      yearSelect.innerHTML = '';
+      for (let year = today.getFullYear() - 5; year <= today.getFullYear() + 1; year++) {
+        yearSelect.insertAdjacentHTML('beforeend', `<option value="${year}">${year}</option>`);
+      }
+      monthSelect.value = String(today.getMonth() + 1).padStart(2, '0');
+      yearSelect.value = String(today.getFullYear());
+    }
+
+    function updateFinancials() {
+      let monthTotal = 0;
+      let monthAppointments = 0;
+      const procedureCounts = {};
+      const selectedMonth = document.getElementById('financeMonthSelect').value;
+      const selectedYear = Number(document.getElementById('financeYearSelect').value);
+      const selectedPeriod = `${selectedYear}-${selectedMonth}`;
+      const selectedMonthNumber = Number(selectedMonth);
+
+      clients.forEach(c => {
+        const val = Number(c.price || 0);
+        if (c.serviceDate) {
+          const d = new Date(c.serviceDate);
+          if (d.getMonth() + 1 === selectedMonthNumber && d.getFullYear() === selectedYear) {
+            monthTotal += val;
+            monthAppointments++;
+            const procedure = (c.technique || c.service || 'Sin procedimiento').trim();
+            procedureCounts[procedure] = (procedureCounts[procedure] || 0) + 1;
+          }
+        }
+      });
+
+      const average = monthAppointments ? monthTotal / monthAppointments : 0;
+      const topProcedureEntry = Object.entries(procedureCounts).sort((a, b) => b[1] - a[1])[0];
+      const periodDate = new Date(selectedYear, selectedMonthNumber - 1, 1);
+      const periodLabel = periodDate.toLocaleDateString('es-PY', { month: 'long', year: 'numeric' });
+
+      document.getElementById('monthTotal').textContent = `Gs. ${monthTotal.toLocaleString('es-PY')}`;
+      document.getElementById('monthAppointments').textContent = monthAppointments;
+      document.getElementById('monthAverage').textContent = `Gs. ${Math.round(average).toLocaleString('es-PY')}`;
+      document.getElementById('topProcedure').textContent = topProcedureEntry ? `${topProcedureEntry[0]} (${topProcedureEntry[1]})` : '—';
+      document.getElementById('financePeriodNote').textContent = `Mostrando dados de ${periodLabel}.`;
+    }
+
+    function updateTopClients() {
+      const sorted = [...clients].sort((a, b) => (b.visitCount || 1) - (a.visitCount || 1)).slice(0, 3);
+      topClientsList.innerHTML = '';
+
+      if (sorted.length === 0) {
+        topClientsList.innerHTML = '<p style="text-align:center; grid-column:span 3; color:var(--text-muted); font-size:0.85rem;">Sin datos suficientes.</p>';
+        return;
+      }
+
+      const medals = ['gold', 'silver', 'bronze'];
+      const emojis = ['🥇', '🥈', '🥉'];
+
+      sorted.forEach((c, index) => {
+        const div = document.createElement('div');
+        div.className = `top-client-card ${medals[index] || ''}`;
+        div.innerHTML = `
+          <div style="font-size:1.5rem; margin-bottom:4px;">${emojis[index]}</div>
+          <strong style="font-size:0.85rem; display:block; color:var(--text-main);">${c.name}</strong>
+          <span style="font-size:0.75rem; color:var(--text-muted);">${c.visitCount || 1} visitas</span>
+        `;
+        topClientsList.appendChild(div);
+      });
+    }
+
+    function updateMaintenanceAlerts() {
+      const container = document.getElementById('maintenanceList');
+      const badge = document.getElementById('maintCountBadge');
+      const card = document.getElementById('maintCard');
+      container.innerHTML = '';
+      
+      const today = new Date();
+      let count = 0;
+
+      clients.forEach(c => {
+        if (!c.serviceDate) return;
+        const lastDate = new Date(c.serviceDate);
+        const diffDays = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
+
+        if (diffDays >= 15 && diffDays <= 20) {
+          count++;
+          const wspNum = formatWhatsAppPhone(c.phone);
+          const wspLink = wspNum ? `https://wa.me/${wspNum}?text=${encodeURIComponent('Hola ' + c.name + ', ¿cómo estás? Ya pasaron algunos días desde tu última aplicación. ¿Qué tal si agendamos tu mantenimiento?')}` : '#';
+
+          const div = document.createElement('div');
+          div.className = 'maintenance-item';
+          div.innerHTML = `
+            <div>
+              <strong>${c.name}</strong><br>
+              <span style="color:var(--text-muted); font-size:0.78rem;">Última vez: ${c.serviceDate} (${diffDays} días atrás)</span>
+            </div>
+            ${wspNum ? `<a href="${wspLink}" target="_blank" class="btn-wsp">💬 Escribir</a>` : ''}
+          `;
+          container.appendChild(div);
+        }
+      });
+
+      if (count > 0) {
+        badge.style.display = 'flex';
+        badge.textContent = count;
+        card.classList.add('urgency-low');
+      } else {
+        badge.style.display = 'none';
+        card.classList.remove('urgency-low');
+        container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem;">Ninguna clienta en período de mantenimiento (15-20 días).</p>';
+      }
+    }
+
+    function updateBirthdayAlerts() {
+      const container = document.getElementById('bdayList');
+      const badge = document.getElementById('bdayCountBadge');
+      const card = document.getElementById('bdayCard');
+      container.innerHTML = '';
+
+      const today = new Date();
+      const tMonth = today.getMonth() + 1;
+      const tDay = today.getDate();
+
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      const tomMonth = tomorrow.getMonth() + 1;
+      const tomDay = tomorrow.getDate();
+
+      let count = 0;
+
+      clients.forEach(c => {
+        if (!c.birthday) return;
+        const parts = c.birthday.split('-');
+        if (parts.length !== 3) return;
+        const bMonth = parseInt(parts[1], 10);
+        const bDay = parseInt(parts[2], 10);
+
+        let isToday = (bMonth === tMonth && bDay === tDay);
+        let isTomorrow = (bMonth === tomMonth && bDay === tomDay);
+
+        if (isToday || isTomorrow) {
+          count++;
+          const tag = isToday ? '<span style="color:#e91e63; font-weight:bold;">🎂 ¡ES HOY!</span>' : '<span style="color:#9c27b0; font-weight:bold;">🎁 ¡Es Mañana!</span>';
+          const wspNum = formatWhatsAppPhone(c.phone);
+          const wspLink = wspNum ? `https://wa.me/${wspNum}?text=${encodeURIComponent('¡Feliz cumpleaños ' + c.name + '! Toda la felicidad del mundo para ti, ¡muchas felicidades!')}` : '#';
+
+          const div = document.createElement('div');
+          div.className = `bday-item ${isToday ? 'today' : 'tomorrow'}`;
+          div.innerHTML = `
+            <div>
+              <strong>${c.name}</strong> ${tag}<br>
+              <span style="color:var(--text-muted); font-size:0.78rem;">Fecha: ${parts[2]}/${parts[1]}</span>
+            </div>
+            ${wspNum ? `<a href="${wspLink}" target="_blank" class="btn-wsp">💬 Felicitar</a>` : ''}
+          `;
+          container.appendChild(div);
+        }
+      });
+
+      if (count > 0) {
+        badge.style.display = 'flex';
+        badge.textContent = count;
+        card.classList.add('urgency-high');
+      } else {
+        badge.style.display = 'none';
+        card.classList.remove('urgency-high');
+        container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem;">Ningún cumpleaños hoy o mañana.</p>';
+      }
+    }
+
+    function filterAppointmentClients() {
+      const query = document.getElementById('appClientSearch').value;
+      const selectedValue = appClientSelect.value;
+      const filteredClients = clients.filter(client => clientMatchesSearch(client, query));
+      appClientSelect.innerHTML = '<option value="">Seleccione una clienta...</option>';
+      filteredClients.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.name;
+        opt.textContent = `${c.name} (${c.phone})`;
+        opt.dataset.phone = c.phone || '';
+        opt.dataset.birthday = c.birthday || '';
+        opt.dataset.clientId = c.id;
+        appClientSelect.appendChild(opt);
+      });
+      if (filteredClients.some(client => client.name === selectedValue)) appClientSelect.value = selectedValue;
+      renderClientSearchResults('appClientSearchResults', filteredClients, query, client => {
+        document.getElementById('appClientSearch').value = client.name || '';
+        appClientSelect.value = client.name;
+        document.getElementById('appClientSearchResults').classList.remove('active');
+      });
+    }
+
+    function updateClientSelectOptions() {
+      filterAppointmentClients();
+    }
+
+    function getTodayDateKey() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function updateAgendaAlerts() {
+      const todayKey = getTodayDateKey();
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrowKey = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
+      const todayCount = appointments.filter(app => app.date === todayKey).length;
+      const tomorrowCount = appointments.filter(app => app.date === tomorrowKey).length;
+
+      agendaCard.classList.remove('urgency-high', 'urgency-low');
+      if (todayCount > 0) {
+        agendaCountBadge.style.display = 'flex';
+        agendaCountBadge.textContent = todayCount;
+        agendaCard.classList.add('urgency-high');
+        agendaTodayAlert.classList.remove('hidden');
+        agendaTodayMessage.innerHTML = `<strong>Atenção:</strong> você tem <strong>${todayCount} ${todayCount === 1 ? 'reserva' : 'reservas'}</strong> agendada${todayCount === 1 ? '' : 's'} para hoje.`;
+      } else {
+        agendaCountBadge.style.display = 'none';
+        agendaTodayAlert.classList.add('hidden');
+        agendaTodayMessage.textContent = '';
+      }
+
+      if (tomorrowCount > 0) {
+        agendaTomorrowCountBadge.style.display = 'flex';
+        agendaTomorrowCountBadge.textContent = tomorrowCount;
+        if (todayCount === 0) agendaCard.classList.add('urgency-low');
+        agendaTomorrowAlert.classList.remove('hidden');
+        agendaTomorrowMessage.innerHTML = `<strong>Atenção:</strong> você tem <strong>${tomorrowCount} ${tomorrowCount === 1 ? 'reserva' : 'reservas'}</strong> agendada${tomorrowCount === 1 ? '' : 's'} para amanhã.`;
+      } else {
+        agendaTomorrowCountBadge.style.display = 'none';
+        agendaTomorrowAlert.classList.add('hidden');
+        agendaTomorrowMessage.textContent = '';
+      }
+    }
+
+    function calculateInactiveClients(minDays = 30) {
+      const today = new Date();
+      return clients
+        .filter(client => {
+          if (!client.serviceDate) return false;
+          const diffDays = Math.floor((today - new Date(client.serviceDate)) / (1000 * 60 * 60 * 24));
+          return diffDays >= minDays;
+        })
+        .sort((a, b) => new Date(a.serviceDate) - new Date(b.serviceDate));
+    }
+
+    function renderInactiveClients() {
+      const list = document.getElementById('inactiveClientsList');
+      if (!list) return;
+      const minDays = Number(document.getElementById('inactivePeriodSelect').value || 30);
+      const inactive = calculateInactiveClients(minDays);
+      list.innerHTML = '';
+
+      if (!inactive.length) {
+        list.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem;">Nenhuma cliente encontrada nesse período.</p>';
+        return;
+      }
+
+      inactive.forEach(client => {
+        const diffDays = Math.max(0, Math.floor((new Date() - new Date(client.serviceDate)) / (1000 * 60 * 60 * 24)));
+        const phone = formatWhatsAppPhone(client.phone);
+        const message = `Hola ${client.name || ''}, ¿cómo estás? Ya pasaron ${diffDays} días desde tu última cita. ¿Te gustaría agendar tu próximo mantenimiento?`;
+        const item = document.createElement('div');
+        item.className = 'maintenance-item inactive-item';
+        item.innerHTML = `<div class="inactive-item-info"><strong>${client.name || 'Cliente'}</strong><span style="color:var(--text-muted); font-size:0.78rem;">Última cita: ${client.serviceDate} (${diffDays} días)</span></div>${phone ? `<a href="https://wa.me/${phone}?text=${encodeURIComponent(message)}" target="_blank" rel="noopener" class="btn-wsp">💬 Escribir</a>` : '<span style="color:var(--text-muted); font-size:0.72rem;">Sin WhatsApp</span>'}`;
+        list.appendChild(item);
+      });
+    }
+
+    function updateDashboard() {
+      const todayKey = getTodayDateKey();
+      const today = new Date();
+      const currentMonth = today.getMonth();
+      const currentYear = today.getFullYear();
+      const monthClients = clients.filter(client => {
+        const date = client.serviceDate ? new Date(client.serviceDate) : null;
+        return date && date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+      });
+      const monthTotal = monthClients.reduce((sum, client) => sum + Number(client.price || 0), 0);
+      const maintenanceCount = clients.filter(client => {
+        if (!client.serviceDate) return false;
+        const days = Math.floor((today - new Date(client.serviceDate)) / (1000 * 60 * 60 * 24));
+        return days >= 15 && days <= 20;
+      }).length;
+      const todayApps = appointments.filter(app => app.date === todayKey && !['cancelado', 'falta'].includes(app.status));
+      const currentDateTime = `${todayKey}T${String(today.getHours()).padStart(2, '0')}:${String(today.getMinutes()).padStart(2, '0')}`;
+      const nextApp = appointments
+        .filter(app => `${app.date || ''}T${app.time || '23:59'}` >= currentDateTime && !['cancelado', 'falta'].includes(app.status))
+        .sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`))[0];
+
+      document.getElementById('dashboardClients').textContent = clients.length;
+      document.getElementById('dashboardTodayAppointments').textContent = todayApps.length;
+      document.getElementById('dashboardMonthTotal').textContent = `Gs. ${monthTotal.toLocaleString('es-PY')}`;
+      document.getElementById('dashboardMaintenance').textContent = maintenanceCount;
+      document.getElementById('dashboardNextAppointment').textContent = nextApp
+        ? `Próximo horário: ${nextApp.clientName || 'Cliente'} — ${formatAgendaDate(nextApp.date)} às ${nextApp.time || '--:--'}.`
+        : 'Próximo horário: nenhum agendamento futuro.';
+
+      const reminders = [];
+      if (todayApps.length) reminders.push(`📅 Você tem ${todayApps.length} agendamento${todayApps.length === 1 ? '' : 's'} hoje.`);
+      const inactiveCount = calculateInactiveClients(30).length;
+      if (inactiveCount) reminders.push(`🔔 ${inactiveCount} cliente${inactiveCount === 1 ? ' inativa precisa' : 's inativas precisam'} de contato.`);
+      if (maintenanceCount) reminders.push(`⏰ ${maintenanceCount} cliente${maintenanceCount === 1 ? ' está' : 's estão'} no período de manutenção.`);
+      const birthdayCount = clients.filter(client => {
+        if (!client.birthday) return false;
+        const parts = client.birthday.split('-');
+        return parts.length === 3 && Number(parts[1]) === today.getMonth() + 1 && Number(parts[2]) === today.getDate();
+      }).length;
+      if (birthdayCount) reminders.push(`🎂 ${birthdayCount} aniversariante${birthdayCount === 1 ? ' hoje' : 's hoje'}.`);
+      document.getElementById('dashboardReminders').innerHTML = reminders.length
+        ? reminders.map(reminder => `<div class="dashboard-reminder">${reminder}</div>`).join('')
+        : '<div class="dashboard-reminder">✅ Nenhum lembrete pendente para hoje.</div>';
+    }
+
+    function formatAgendaDate(dateKey) {
+      if (!dateKey) return 'Data não selecionada';
+      const parts = dateKey.split('-');
+      if (parts.length !== 3) return dateKey;
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    function selectAgendaToday() {
+      agendaDateFilter.value = getTodayDateKey();
+      renderAppointments();
+    }
+
+    const agendaStatusLabels = {
+      confirmado: 'Confirmado', aguardando: 'Aguardando', concluido: 'Concluído',
+      cancelado: 'Cancelado', falta: 'Cliente faltou'
+    };
+    function normalizeAppointmentStatus(app) { return agendaStatusLabels[app.status] ? app.status : 'aguardando'; }
+    function switchAgendaView(view) {
+      agendaView = view;
+      agendaDailyTab.classList.toggle('active', view === 'daily');
+      agendaWeeklyTab.classList.toggle('active', view === 'weekly');
+      agendaMonthlyTab.classList.toggle('active', view === 'monthly');
+      agendaDailyView.style.display = view === 'daily' ? 'block' : 'none';
+      agendaWeeklyView.style.display = view === 'weekly' ? 'block' : 'none';
+      agendaMonthlyView.style.display = view === 'monthly' ? 'block' : 'none';
+      if (view === 'weekly') renderWeeklyAgenda();
+      else if (view === 'monthly') renderMonthlyAgenda();
+      else renderAppointments();
+    }
+    function selectAgendaToday() { agendaDateFilter.value = getTodayDateKey(); agendaWeekOffset = 0; agendaMonthOffset = 0; if (agendaView === 'weekly') renderWeeklyAgenda(); else if (agendaView === 'monthly') renderMonthlyAgenda(); else renderAppointments(); }
+    function getWeekStart(date) { const d = new Date(date + 'T12:00:00'); const day = d.getDay(); d.setDate(d.getDate() - day); return d; }
+    function dateKeyFromDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+    function changeAgendaWeek(delta) { agendaWeekOffset += delta; renderWeeklyAgenda(); }
+    function changeAgendaMonth(delta) { agendaMonthOffset += delta; renderMonthlyAgenda(); }
+    function renderMonthlyAgenda() {
+      const base = new Date((agendaDateFilter.value || getTodayDateKey()) + 'T12:00:00');
+      const monthDate = new Date(base.getFullYear(), base.getMonth() + agendaMonthOffset, 1);
+      const year = monthDate.getFullYear();
+      const month = monthDate.getMonth();
+      agendaMonthLabel.textContent = monthDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+      agendaMonthGrid.innerHTML = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(day => `<div class="agenda-month-weekday">${day}</div>`).join('');
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      for (let i = 0; i < firstDay; i++) agendaMonthGrid.insertAdjacentHTML('beforeend', '<div class="agenda-month-day empty"></div>');
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const key = dateKeyFromDate(date);
+        const dayApps = appointments.filter(app => app.date === key && !['cancelado', 'falta'].includes(app.status));
+        const cell = document.createElement('button');
+        cell.type = 'button';
+        cell.className = `agenda-month-day ${key === getTodayDateKey() ? 'today' : ''} ${key === agendaDateFilter.value ? 'selected' : ''}`;
+        cell.innerHTML = `<span class="agenda-month-day-number">${day}</span>${dayApps.length ? `<span class="agenda-month-count">${dayApps.length} ${dayApps.length === 1 ? 'cita' : 'citas'}</span>` : ''}`;
+        cell.onclick = () => { agendaDateFilter.value = key; switchAgendaView('daily'); };
+        agendaMonthGrid.appendChild(cell);
+      }
+    }
+    function renderWeeklyAgenda() {
+      const base = new Date((agendaDateFilter.value || getTodayDateKey()) + 'T12:00:00');
+      const start = getWeekStart(dateKeyFromDate(base)); start.setDate(start.getDate() + agendaWeekOffset * 7);
+      const end = new Date(start); end.setDate(start.getDate() + 6);
+      agendaWeekLabel.textContent = `${formatAgendaDate(dateKeyFromDate(start))} a ${formatAgendaDate(dateKeyFromDate(end))}`;
+      agendaWeekGrid.innerHTML = '';
+      const dayNames = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+      for (let i = 0; i < 7; i++) {
+        const day = new Date(start); day.setDate(start.getDate() + i); const key = dateKeyFromDate(day);
+        const dayApps = appointments.filter(a => a.date === key).sort((a,b) => String(a.time||'').localeCompare(String(b.time||'')));
+        const col = document.createElement('div'); col.className = `agenda-week-day ${key === getTodayDateKey() ? 'today' : ''}`;
+        col.innerHTML = `<div class="agenda-week-day-header">${dayNames[i]} ${String(day.getDate()).padStart(2,'0')}/${String(day.getMonth()+1).padStart(2,'0')}<span class="agenda-week-count">${dayApps.length} ${dayApps.length === 1 ? 'horário' : 'horários'}</span></div>`;
+        if (!dayApps.length) col.innerHTML += '<div style="text-align:center;color:var(--text-muted);font-size:.68rem;padding:10px 0;">Vazia</div>';
+        dayApps.forEach(app => { const st = normalizeAppointmentStatus(app); col.innerHTML += `<div class="agenda-week-item status-${st}"><strong>${app.time || '--:--'} · ${app.clientName || 'Cliente'}</strong><span class="agenda-status">${agendaStatusLabels[st]}</span></div>`; });
+        agendaWeekGrid.appendChild(col);
+      }
+    }
+    function formatAgendaDate(dateKey) { if (!dateKey) return 'Data não selecionada'; const p = dateKey.split('-'); return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : dateKey; }
+    function renderAppointments() {
+      const selectedDate = agendaDateFilter.value || getTodayDateKey(); if (!agendaDateFilter.value) agendaDateFilter.value = selectedDate;
+      const selectedAppointments = appointments.filter(app => app.date === selectedDate).sort((a,b) => String(a.time||'').localeCompare(String(b.time||'')));
+      agendaSelectedDateLabel.textContent = `Agenda de ${formatAgendaDate(selectedDate)}`; agendaSelectedCount.textContent = `${selectedAppointments.length} ${selectedAppointments.length === 1 ? 'agendamento' : 'agendamentos'}`; appointmentList.innerHTML = '';
+      if (!selectedAppointments.length) { appointmentList.innerHTML = `<div class="agenda-empty">📭 Agenda vazia para ${formatAgendaDate(selectedDate)}.</div>`; updateAgendaAlerts(); return; }
+      selectedAppointments.forEach(app => {
+        const st = normalizeAppointmentStatus(app), wspNum = formatWhatsAppPhone(app.clientPhone); const confirmMsg = `Hola ${app.clientName}, te escribo para confirmar tu cita de ${app.service || 'pestañas'} para el día ${app.date} a las ${app.time}. ¿Me confirmas tu asistencia por favor?`; const wspConfirmLink = wspNum ? `https://wa.me/${wspNum}?text=${encodeURIComponent(confirmMsg)}` : '#';
+        const div = document.createElement('div'); div.className = `item-card agenda-item status-${st}`; div.innerHTML = `<strong>👤 ${app.clientName || 'Cliente não informado'}</strong><br>🕒 Horário: <strong>${app.time || 'Não informado'}</strong><br>📅 Data: ${formatAgendaDate(app.date)}<br>💅 Procedimento: ${app.service || 'N/A'}<br><span class="agenda-status">${agendaStatusLabels[st]}</span><br>💵 Seña: Gs. ${Number(app.deposit || 0).toLocaleString('es-PY')}<div class="action-buttons">${wspNum ? `<a href="${wspConfirmLink}" target="_blank" class="btn-confirm-wsp">💬 Confirmar WhatsApp</a>` : ''}<button class="btn-complete" onclick="completeAppointment('${app.id}')">✅ Concluido (Generar Ficha)</button><button class="btn-edit" onclick="editAppointment('${app.id}')">Editar</button><button class="btn-delete" onclick="deleteAppointment('${app.id}')">Cancelar</button></div>`; appointmentList.appendChild(div);
+      }); updateAgendaAlerts();
+    }
+    /* FORM SUBMIT CLIENTE */
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnSaveClient');
+      btn.disabled = true;
+      btn.textContent = 'Guardando...';
+
+      try {
+        let photoUrl = document.getElementById('photoUrl').value;
+        if (photoRemoveRequested) photoUrl = '';
+        if (selectedFile) {
+          photoUrl = await uploadPhotoToStorage(selectedFile);
+        }
+
+        const clientData = {
+          name: document.getElementById('name').value,
+          phone: document.getElementById('phone').value,
+          birthday: document.getElementById('birthday').value,
+          serviceDate: document.getElementById('serviceDate').value,
+          price: Number(document.getElementById('price').value || 0),
+          technique: document.getElementById('technique').value,
+          cejas: document.getElementById('cejas').value,
+          removal: document.getElementById('removal').value,
+          curvature: document.getElementById('curvature').value,
+          thickness: document.getElementById('thickness').value,
+          mapping: document.getElementById('mapping').value,
+          adhesive: document.getElementById('adhesive').value,
+          visitCount: Number(document.getElementById('visitCount').value || 1),
+          notes: document.getElementById('notes').value,
+          photoUrl: photoUrl,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        const clientId = document.getElementById('clientId').value;
+        const appointmentIdToClear = document.getElementById('appointmentIdToClear').value;
+
+        if (clientId) {
+          await db.collection('clients').doc(clientId).update(clientData);
+        } else {
+          await db.collection('clients').add(clientData);
+        }
+
+        if (appointmentIdToClear) {
+          await db.collection('appointments').doc(appointmentIdToClear).delete();
+        }
+
+        alert('¡Guardado con éxito!');
+        resetClientForm();
+        goHome();
+      } catch (err) {
+        console.error(err);
+        alert('Error al guardar: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Guardar en la Nube';
+      }
+    });
+
+    function editClient(id) {
+      const c = clients.find(item => item.id === id);
+      if (!c) return;
+
+      document.getElementById('clientId').value = c.id;
+      document.getElementById('name').value = c.name || '';
+      document.getElementById('phone').value = c.phone || '';
+      document.getElementById('birthday').value = c.birthday || '';
+      document.getElementById('serviceDate').value = c.serviceDate || '';
+      document.getElementById('price').value = c.price || '';
+      document.getElementById('technique').value = c.technique || 'Sin servicio';
+      document.getElementById('cejas').value = c.cejas || 'Sin servicio';
+      document.getElementById('removal').value = c.removal || 'No';
+      document.getElementById('curvature').value = c.curvature || 'C';
+      document.getElementById('thickness').value = c.thickness || '0.07mm';
+      document.getElementById('mapping').value = c.mapping || '';
+      document.getElementById('adhesive').value = c.adhesive || '';
+      document.getElementById('visitCount').value = c.visitCount || 1;
+      document.getElementById('notes').value = c.notes || '';
+      document.getElementById('photoUrl').value = c.photoUrl || '';
+      selectedFile = null;
+      photoRemoveRequested = false;
+
+      document.getElementById('formTitle').textContent = '📝 Editar Ficha de Clienta';
+      document.getElementById('btnCancelEdit').style.display = 'block';
+      renderFichaHistory(c.phone, c.id);
+      openScreen('module-ficha');
+    }
+
+    function resetClientForm() {
+      form.reset();
+      document.getElementById('clientId').value = '';
+      document.getElementById('appointmentIdToClear').value = '';
+      document.getElementById('photoUrl').value = '';
+      document.getElementById('formTitle').textContent = '📝 Nueva Ficha / Servicio Realizado';
+      document.getElementById('btnCancelEdit').style.display = 'none';
+      selectedFile = null;
+      photoRemoveRequested = false;
+      document.getElementById('serviceDate').valueAsDate = new Date();
+      document.getElementById('fichaHistoryPanel').style.display = 'none';
+    }
+
+    async function deleteClient(id) {
+      if (confirm('¿Realmente deseas eliminar esta clienta?')) {
+        await db.collection('clients').doc(id).delete();
+      }
+    }
+
+    /* ==================== HISTORIAL DE LOS 5 ÚLTIMOS TRABAJOS ==================== */
+
+    function getClientHistory(phone, excludeId) {
+      if (!phone) return [];
+      return clients
+        .filter(c => c.phone === phone && c.id !== excludeId)
+        .sort((a, b) => new Date(b.serviceDate || 0) - new Date(a.serviceDate || 0))
+        .slice(0, 5);
+    }
+
+    function historyEntryHTML(h) {
+      return `
+        <div class="history-entry">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px;">
+            <strong style="font-size:0.84rem; color:var(--primary);">🗓️ ${h.serviceDate || 'N/A'}</strong>
+            <span style="font-size:0.8rem; color:#2e9e64; font-weight:700; white-space:nowrap;">Gs. ${Number(h.price || 0).toLocaleString('es-PY')}</span>
+          </div>
+          <div style="font-size:0.8rem; color:var(--text-main); margin-top:3px;">
+            👁️ ${h.technique || 'N/A'}${h.cejas && h.cejas !== 'Sin servicio' ? ' | Cejas: ' + h.cejas : ''}
+          </div>
+          ${h.mapping ? `<div style="font-size:0.78rem; color:var(--primary); font-weight:700; margin-top:3px;">🗺️ Mapeo: ${h.mapping}</div>` : ''}
+          ${h.serviceTime ? `<div style="font-size:0.76rem; color:var(--text-muted); margin-top:2px;">⏱️ ${h.serviceTime}</div>` : ''}
+          ${h.notes ? `<div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">📝 ${h.notes}</div>` : ''}
+        </div>
+      `;
+    }
+
+    // Painel de histórico dentro de la ficha (al editar una clienta)
+    function renderFichaHistory(phone, currentId) {
+      const panel = document.getElementById('fichaHistoryPanel');
+      const list = document.getElementById('fichaHistoryList');
+      const history = getClientHistory(phone, currentId);
+
+      if (history.length === 0) {
+        panel.style.display = 'none';
+        list.innerHTML = '';
+        return;
+      }
+
+      list.innerHTML = history.map(historyEntryHTML).join('');
+      panel.style.display = 'block';
+    }
+
+    // Modal de histórico accesible desde la lista de clientes
+    function openHistoryModal(id) {
+      const c = clients.find(item => item.id === id);
+      if (!c) return;
+
+      document.getElementById('historyClientName').textContent = c.name || '';
+      const list = document.getElementById('historyList');
+      const history = getClientHistory(c.phone, null);
+
+      if (history.length === 0) {
+        list.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem;">Sin registros de trabajos para esta clienta.</p>';
+      } else {
+        list.innerHTML = history.map(historyEntryHTML).join('');
+      }
+      document.getElementById('historyModal').classList.add('active');
+    }
+
+    function closeHistoryModal() {
+      document.getElementById('historyModal').classList.remove('active');
+    }
+
+    /* AGENDAMENTOS */
+    function appointmentBlocksSlot(appointment) {
+      return appointment && !['cancelado', 'falta'].includes(appointment.status || 'aguardando');
+    }
+
+    async function findAppointmentConflict(date, time, currentId) {
+      if (!date || !time) return null;
+      let candidates = appointments;
+      try {
+        const snapshot = await db.collection('appointments')
+          .where('date', '==', date)
+          .get();
+        candidates = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      } catch (error) {
+        console.warn('Não foi possível consultar os agendamentos recentes; usando os dados carregados.', error);
+      }
+
+      return candidates.find(appointment =>
+        appointment.id !== currentId &&
+        appointment.date === date &&
+        appointment.time === time &&
+        appointmentBlocksSlot(appointment)
+      ) || null;
+    }
+
+    appointmentForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const select = appClientSelect;
+      const opt = select.options[select.selectedIndex];
+      const appId = document.getElementById('appointmentId').value;
+      const appDate = document.getElementById('appDate').value;
+      const appTime = document.getElementById('appTime').value;
+      const appStatus = document.getElementById('appStatus').value || 'aguardando';
+
+      const conflict = appStatus !== 'cancelado' && appStatus !== 'falta'
+        ? await findAppointmentConflict(appDate, appTime, appId)
+        : null;
+
+      if (conflict) {
+        alert(`Este horário já está reservado para ${conflict.clientName || 'outra cliente'} em ${formatAgendaDate(conflict.date)} às ${conflict.time}. Escolha outro horário.`);
+        document.getElementById('appDate').focus();
+        return;
+      }
+
+      const appData = {
+        clientName: select.value,
+        clientPhone: opt.dataset.phone || '',
+        clientId: opt.dataset.clientId || '',
+        date: appDate,
+        time: appTime,
+        service: document.getElementById('appService').value,
+        deposit: Number(document.getElementById('appDeposit').value || 0),
+        status: appStatus
+      };
+
+      if (appId) {
+        await db.collection('appointments').doc(appId).update(appData);
+      } else {
+        await db.collection('appointments').add(appData);
+      }
+
+      alert('¡Agendamiento guardado con éxito!');
+      resetAppointmentForm();
+      openScreen('module-agenda');
+    });
+
+    function resetAppointmentForm() {
+      appointmentForm.reset();
+      document.getElementById('appointmentId').value = '';
+      document.getElementById('btnSaveAppointment').textContent = 'Confirmar Agendamiento';
+      document.getElementById('btnCancelAppointmentEdit').style.display = 'none';
+      document.getElementById('appDate').valueAsDate = new Date();
+    }
+
+    function editAppointment(id) {
+      const app = appointments.find(a => a.id === id);
+      if (!app) return;
+
+      document.getElementById('appointmentId').value = app.id;
+      appClientSelect.value = app.clientName;
+      document.getElementById('appDate').value = app.date;
+      document.getElementById('appTime').value = app.time;
+      document.getElementById('appService').value = app.service || '';
+      document.getElementById('appDeposit').value = app.deposit || '';
+      document.getElementById('appStatus').value = app.status || 'aguardando';
+
+      document.getElementById('btnSaveAppointment').textContent = 'Actualizar Agendamiento';
+      document.getElementById('btnCancelAppointmentEdit').style.display = 'block';
+      openScreen('module-agendar');
+    }
+
+    async function deleteAppointment(id) {
+      if (confirm('¿Deseas cancelar este agendamiento?')) {
+        await db.collection('appointments').doc(id).delete();
+      }
+    }
+
+    function completeAppointment(id) {
+      const app = appointments.find(a => a.id === id);
+      if (!app) return;
+
+      const client = clients.find(c => c.id === app.clientId || c.name === app.clientName);
+
+      if (client) {
+        editClient(client.id);
+        document.getElementById('appointmentIdToClear').value = app.id;
+        if (app.service) document.getElementById('technique').value = app.service;
+      } else {
+        resetClientForm();
+        document.getElementById('name').value = app.clientName;
+        document.getElementById('appointmentIdToClear').value = app.id;
+        openScreen('module-ficha');
+      }
+
+      // Ao concluir o agendamento, a ficha recebe automaticamente a data local de hoje.
+      document.getElementById('serviceDate').value = getTodayDateKey();
+    }
+
+    function exportToExcel() {
+      const selectedPeriod = `${document.getElementById('financeYearSelect').value}-${document.getElementById('financeMonthSelect').value}`;
+      let csv = 'Nombre,Telefono,Cumpleanos,Fecha Atencion,Monto,Tecnica,Cejas,Visitas\n';
+      clients.filter(c => String(c.serviceDate || '').slice(0, 7) === selectedPeriod).forEach(c => {
+        csv += `"${c.name || ''}","${c.phone || ''}","${c.birthday || ''}","${c.serviceDate || ''}",${c.price || 0},"${c.technique || ''}","${c.cejas || ''}",${c.visitCount || 1}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `reporte_financiero_${selectedPeriod}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  </script>
+</body>
+</html>
