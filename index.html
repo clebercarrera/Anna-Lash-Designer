@@ -800,6 +800,11 @@
     .cita-img { display: block; width: 100%; max-height: 70vh; object-fit: contain; border-radius: 12px; margin: 4px auto 0; }
     .cita-actions { display: flex; gap: 8px; margin-top: 14px; }
     .cita-actions button { flex: 1; margin-top: 0; font-size: 0.82rem; }
+    .cita-image-tabs { display:flex; gap:8px; margin:12px 0 4px; }
+    .cita-image-tabs button { flex:1; margin:0; min-height:40px; padding:8px 10px; font-size:0.78rem; background:var(--card-item-bg); color:var(--primary); border:1px solid var(--border-color); box-shadow:none; }
+    .cita-image-tabs button.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+    .cita-panel { display:none; }
+    .cita-panel.active { display:block; }
     .btn-share-cita { background: linear-gradient(135deg, #25d366, #159447); }
     .btn-whatsapp-cita { background: linear-gradient(135deg, #25d366, #128c7e); }
     .share-help { color: var(--text-muted); font-size: 0.78rem; line-height: 1.4; margin-top: 8px; }
@@ -1357,7 +1362,16 @@
       <button class="btn-back" onclick="goHome()">⬅ Menú Principal</button>
       <div class="card">
         <h2>📄 CITA</h2>
-        <img src="./cita.png" alt="CITA" class="cita-img" onerror="this.alt='Não foi possível carregar cita.png. Verifique se o arquivo está na mesma pasta do index.html.'; this.style.border='2px dashed var(--accent-gold)';">
+        <div class="cita-image-tabs" role="tablist" aria-label="Imagens da área CITA">
+          <button type="button" id="citaImageTab" class="active" onclick="showCitaImage('cita')" role="tab" aria-selected="true">📄 Regras da CITA</button>
+          <button type="button" id="bancoImageTab" onclick="showCitaImage('banco')" role="tab" aria-selected="false">🏦 Dados para transferência</button>
+        </div>
+        <div id="citaImagePanel" class="cita-panel active">
+          <img src="./cita.png" alt="CITA" class="cita-img" onerror="this.alt='Não foi possível carregar cita.png. Verifique se o arquivo está na mesma pasta do index.html.'; this.style.border='2px dashed var(--accent-gold)';">
+        </div>
+        <div id="bancoImagePanel" class="cita-panel">
+          <img src="./banco.png" alt="Dados bancários para transferência" class="cita-img" onerror="this.alt='Não foi possível carregar banco.png. Verifique se o arquivo está na mesma pasta do index.html.'; this.style.border='2px dashed var(--accent-gold)';">
+        </div>
         <div class="cita-actions">
           <button type="button" class="btn-share-cita" onclick="openCitaShareModal()">📤 Encaminhar</button>
         </div>
@@ -1621,6 +1635,16 @@
     function closeWifiModal() { document.getElementById('wifiModal').classList.remove('active'); }
     function openInstagramModal() { document.getElementById('instagramModal').classList.add('active'); }
     function closeInstagramModal() { document.getElementById('instagramModal').classList.remove('active'); }
+
+    function showCitaImage(imageName) {
+      const isBanco = imageName === 'banco';
+      document.getElementById('citaImagePanel').classList.toggle('active', !isBanco);
+      document.getElementById('bancoImagePanel').classList.toggle('active', isBanco);
+      document.getElementById('citaImageTab').classList.toggle('active', !isBanco);
+      document.getElementById('bancoImageTab').classList.toggle('active', isBanco);
+      document.getElementById('citaImageTab').setAttribute('aria-selected', String(!isBanco));
+      document.getElementById('bancoImageTab').setAttribute('aria-selected', String(isBanco));
+    }
 
     function normalizeSearchText(value) {
       return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
