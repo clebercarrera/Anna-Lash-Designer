@@ -175,6 +175,18 @@
     .menu-category .menu-card { min-height:88px; padding:12px 8px 10px; }
     .menu-category .menu-card-icon { font-size:1.35rem; width:36px; height:36px; margin-bottom:5px; }
     .menu-category .menu-card-title { font-size:0.76rem; }
+    .category-entry { min-height:82px; flex-direction:row; justify-content:flex-start; gap:12px; padding:14px 16px; text-align:left; }
+    .category-entry .menu-card-icon { margin:0; }
+    .category-entry .menu-card-title { font-size:0.9rem; }
+    .category-entry .category-arrow { margin-left:auto; color:var(--accent-gold); font-size:1.2rem; font-weight:800; }
+    .agenda-alert-legend { display:flex; flex-wrap:wrap; gap:4px 8px; margin-top:4px; color:var(--text-muted); font-size:0.62rem; font-weight:700; line-height:1.2; }
+    .agenda-alert-legend span { white-space:nowrap; }
+    .agenda-alert-legend .legend-today { color:#c23e58; }
+    .agenda-alert-legend .legend-tomorrow { color:#a96f12; }
+    .agenda-alert-legend .legend-maintenance { color:#b87916; }
+    .submenu-header { margin-bottom:12px; color:var(--primary); font-family:var(--font-display); font-style:italic; }
+    .submenu-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; }
+    .submenu-grid .menu-card { min-height:104px; }
 
     .menu-card {
       background: var(--card-item-bg);
@@ -343,6 +355,11 @@
       top: 36px;
       background: radial-gradient(circle, #f3c65d 0%, #c8891d 100%);
       box-shadow: 0 0 8px rgba(211, 154, 40, 0.65);
+    }
+    .menu-badge.maintenance-badge {
+      top: 62px;
+      background: radial-gradient(circle, #efb24b 0%, #b87916 100%);
+      box-shadow: 0 0 8px rgba(184, 121, 22, 0.65);
     }
     body.dark-mode .agenda-tomorrow-alert {
       background: color-mix(in srgb, #725622 42%, var(--card-item-bg));
@@ -980,6 +997,18 @@
 
     <!-- TELA INICIAL: MENU PRINCIPAL -->
     <div id="module-menu" class="module-content active">
+      <div class="main-menu-grid">
+        <div class="menu-card category-entry" onclick="openDashboardSummary()"><div class="menu-card-icon">📊</div><div class="menu-card-title">Resumo do Estúdio</div><span class="category-arrow">›</span></div>
+        <div class="menu-card category-entry" id="agendaCard" onclick="openScreen('module-submenu-agenda')"><div class="menu-card-icon">📅</div><div><div class="menu-card-title">Agenda <span class="menu-badge" id="agendaCountBadge" style="display:none;"></span><span class="menu-badge tomorrow-badge" id="agendaTomorrowCountBadge" style="display:none;"></span><span class="menu-badge maintenance-badge" id="agendaMaintenanceBadge" style="display:none;" title="Clientes em período de manutenção"></span></div><div class="agenda-alert-legend"><span class="legend-today">● Hoje</span><span class="legend-tomorrow">● Amanhã</span><span class="legend-maintenance">● Manutenção</span></div></div><span class="category-arrow">›</span></div>
+        <div class="menu-card category-entry" onclick="openScreen('module-submenu-clientes')"><div class="menu-card-icon">👥</div><div class="menu-card-title">Clientes</div><span class="category-arrow">›</span></div>
+        <div class="menu-card category-entry" onclick="openScreen('module-submenu-financeiro')"><div class="menu-card-icon">💰</div><div class="menu-card-title">Financeiro</div><span class="category-arrow">›</span></div>
+        <div class="menu-card category-entry" onclick="openScreen('module-submenu-ferramentas')"><div class="menu-card-icon">🧰</div><div class="menu-card-title">Ferramentas</div><span class="category-arrow">›</span></div>
+      </div>
+    </div>
+
+    <!-- TELA: RESUMO DO ESTÚDIO -->
+    <div id="module-resumo" class="module-content">
+      <button class="btn-back" onclick="goHome()">⬅ Menu Principal</button>
       <div class="dashboard-summary">
         <h2>✨ Resumo do Estúdio</h2>
         <div class="dashboard-metrics">
@@ -991,51 +1020,54 @@
         <div id="dashboardNextAppointment" class="dashboard-next">Próximo horário: nenhum agendamento futuro.</div>
         <div id="dashboardReminders" class="dashboard-reminders"></div>
       </div>
-      <div class="main-menu-grid">
-        <section class="menu-category">
-          <h3 class="menu-category-title">✨ Dashboard</h3>
-          <div class="menu-category-grid">
-            <div class="menu-card" onclick="openDashboardSummary()"><div class="menu-card-icon">📊</div><div class="menu-card-title">Resumo do Estúdio</div></div>
-            <div id="agendaCard" class="menu-card" onclick="openScreen('module-agenda')"><div class="menu-card-icon">📌</div><div class="menu-card-title">Próximos Horários</div><span class="menu-badge" id="agendaCountBadge" style="display:none;"></span><span class="menu-badge tomorrow-badge" id="agendaTomorrowCountBadge" style="display:none;"></span></div>
-          </div>
-        </section>
+    </div>
 
-        <section class="menu-category">
-          <h3 class="menu-category-title">📅 Agenda</h3>
-          <div class="menu-category-grid">
-            <div class="menu-card" onclick="openScreen('module-agendar')"><div class="menu-card-icon">📅</div><div class="menu-card-title">Agendar / Reservar</div></div>
-            <div id="maintCard" class="menu-card maint-card" onclick="openScreen('module-manutencion')"><span id="maintCountBadge" class="menu-badge" style="display:none;">0</span><div class="menu-card-icon">⏰</div><div class="menu-card-title">Mantenimiento</div></div>
-            <div id="bdayCard" class="menu-card bday-card" onclick="openScreen('module-cumpleanos')"><span id="bdayCountBadge" class="menu-badge" style="display:none;">0</span><div class="menu-card-icon">🎂</div><div class="menu-card-title">Cumpleaños</div></div>
-          </div>
-        </section>
+    <!-- TELA: SUBMENU AGENDA -->
+    <div id="module-submenu-agenda" class="module-content">
+      <button class="btn-back" onclick="goHome()">⬅ Menu Principal</button>
+      <div class="card"><h2 class="submenu-header">📅 Agenda</h2>
+        <div class="submenu-grid">
+          <div class="menu-card" onclick="openScreen('module-agendar')"><div class="menu-card-icon">📅</div><div class="menu-card-title">Agendar / Reservar</div></div>
+          <div class="menu-card" onclick="openScreen('module-agenda')"><div class="menu-card-icon">📌</div><div class="menu-card-title">Próximos Horários</div></div>
+          <div id="maintCard" class="menu-card maint-card" onclick="openScreen('module-manutencion')"><span id="maintCountBadge" class="menu-badge" style="display:none;">0</span><div class="menu-card-icon">⏰</div><div class="menu-card-title">Manutenção</div></div>
+          <div id="bdayCard" class="menu-card bday-card" onclick="openScreen('module-cumpleanos')"><span id="bdayCountBadge" class="menu-badge" style="display:none;">0</span><div class="menu-card-icon">🎂</div><div class="menu-card-title">Aniversários</div></div>
+        </div>
+      </div>
+    </div>
 
-        <section class="menu-category">
-          <h3 class="menu-category-title">👥 Clientes</h3>
-          <div class="menu-category-grid">
-            <div class="menu-card" onclick="openScreen('module-ficha')"><div class="menu-card-icon">📝</div><div class="menu-card-title">Nueva Ficha</div></div>
-            <div class="menu-card" onclick="openScreen('module-inativas')"><div class="menu-card-icon">🔔</div><div class="menu-card-title">Clientes Inativas</div></div>
-            <div class="menu-card" onclick="openScreen('module-top')"><div class="menu-card-icon">🏆</div><div class="menu-card-title">Top 3 Clientes</div></div>
-            <div class="menu-card" onclick="openScreen('module-financeiro'); switchFinTab('clientes')"><div class="menu-card-icon">📖</div><div class="menu-card-title">Lista & Histórico</div></div>
-          </div>
-        </section>
+    <!-- TELA: SUBMENU CLIENTES -->
+    <div id="module-submenu-clientes" class="module-content">
+      <button class="btn-back" onclick="goHome()">⬅ Menu Principal</button>
+      <div class="card"><h2 class="submenu-header">👥 Clientes</h2>
+        <div class="submenu-grid">
+          <div class="menu-card" onclick="openScreen('module-ficha')"><div class="menu-card-icon">📝</div><div class="menu-card-title">Nova Ficha</div></div>
+          <div class="menu-card" onclick="openScreen('module-inativas')"><div class="menu-card-icon">🔔</div><div class="menu-card-title">Clientes Inativas</div></div>
+          <div class="menu-card" onclick="openScreen('module-top')"><div class="menu-card-icon">🏆</div><div class="menu-card-title">Top 3 Clientes</div></div>
+          <div class="menu-card" onclick="openScreen('module-financeiro'); switchFinTab('clientes')"><div class="menu-card-icon">📖</div><div class="menu-card-title">Lista & Histórico</div></div>
+        </div>
+      </div>
+    </div>
 
-        <section class="menu-category">
-          <h3 class="menu-category-title">💰 Financeiro</h3>
-          <div class="menu-category-grid">
-            <div class="menu-card" onclick="openScreen('module-financeiro'); switchFinTab('finanza')"><div class="menu-card-icon">📊</div><div class="menu-card-title">Faturamento Mensal</div></div>
-            <div class="menu-card" onclick="openScreen('module-financeiro'); switchFinTab('finanza')"><div class="menu-card-icon">📈</div><div class="menu-card-title">Relatório Financeiro</div></div>
-          </div>
-        </section>
+    <!-- TELA: SUBMENU FINANCEIRO -->
+    <div id="module-submenu-financeiro" class="module-content">
+      <button class="btn-back" onclick="goHome()">⬅ Menu Principal</button>
+      <div class="card"><h2 class="submenu-header">💰 Financeiro</h2>
+        <div class="submenu-grid">
+          <div class="menu-card" onclick="openScreen('module-financeiro'); switchFinTab('finanza')"><div class="menu-card-icon">📊</div><div class="menu-card-title">Faturamento Mensal</div></div>
+          <div class="menu-card" onclick="openScreen('module-financeiro'); switchFinTab('finanza')"><div class="menu-card-icon">📈</div><div class="menu-card-title">Relatório Financeiro</div></div>
+        </div>
+      </div>
+    </div>
 
-        <section class="menu-category">
-          <h3 class="menu-category-title">🧰 Ferramentas</h3>
-          <div class="menu-category-grid">
-            <button type="button" class="menu-card cita-card" onclick="openScreen('module-cita')" aria-label="Abrir CITA"><div class="menu-card-icon">📄</div><div class="menu-card-title">CITA</div></button>
-            <div class="menu-card wifi-card" onclick="openWifiModal()"><div class="menu-card-icon">📶</div><div class="menu-card-title">WIFI Visitas</div></div>
-            <div class="menu-card" onclick="openInstagramModal()"><div class="menu-card-icon">📷</div><div class="menu-card-title">Perfil Instagram</div></div>
-          </div>
-        </section>
-
+    <!-- TELA: SUBMENU FERRAMENTAS -->
+    <div id="module-submenu-ferramentas" class="module-content">
+      <button class="btn-back" onclick="goHome()">⬅ Menu Principal</button>
+      <div class="card"><h2 class="submenu-header">🧰 Ferramentas</h2>
+        <div class="submenu-grid">
+          <button type="button" class="menu-card cita-card" onclick="openScreen('module-cita')"><div class="menu-card-icon">📄</div><div class="menu-card-title">CITA</div></button>
+          <div class="menu-card wifi-card" onclick="openWifiModal()"><div class="menu-card-icon">📶</div><div class="menu-card-title">WIFI Visitas</div></div>
+          <div class="menu-card" onclick="openInstagramModal()"><div class="menu-card-icon">📷</div><div class="menu-card-title">Perfil Instagram</div></div>
+        </div>
       </div>
     </div>
 
@@ -1616,20 +1648,44 @@
       }
     }
 
-    function openScreen(screenId) {
+    let currentScreenId = document.querySelector('.module-content.active')?.id || 'module-menu';
+    const screenHistory = [];
+
+    function openScreen(screenId, skipHistory = false) {
+      if (!screenId || screenId === currentScreenId) return;
+      if (!skipHistory && currentScreenId) screenHistory.push(currentScreenId);
       document.querySelectorAll('.module-content').forEach(mod => mod.classList.remove('active'));
-      document.getElementById(screenId).classList.add('active');
+      const nextScreen = document.getElementById(screenId);
+      if (!nextScreen) return;
+      nextScreen.classList.add('active');
+      currentScreenId = screenId;
     }
 
-    function goHome() { openScreen('module-menu'); }
+    function goBack() {
+      const previousScreen = screenHistory.pop() || 'module-menu';
+      openScreen(previousScreen, true);
+    }
+
+    function goHome() {
+      screenHistory.length = 0;
+      openScreen('module-menu', true);
+    }
+
+    function addPreviousMenuButtons() {
+      document.querySelectorAll('.module-content:not(#module-menu) > .btn-back').forEach(mainButton => {
+        if (mainButton.previousElementSibling?.classList.contains('btn-back-history')) return;
+        const previousButton = document.createElement('button');
+        previousButton.type = 'button';
+        previousButton.className = 'btn-back btn-back-history';
+        previousButton.textContent = '← Voltar';
+        previousButton.onclick = goBack;
+        mainButton.parentNode.insertBefore(previousButton, mainButton);
+      });
+    }
+
+    addPreviousMenuButtons();
     function openDashboardSummary() {
-      goHome();
-      const summary = document.querySelector('.dashboard-summary');
-      if (!summary) return;
-      summary.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      summary.classList.remove('highlight');
-      void summary.offsetWidth;
-      summary.classList.add('highlight');
+      openScreen('module-resumo');
     }
     function openWifiModal() { document.getElementById('wifiModal').classList.add('active'); }
     function closeWifiModal() { document.getElementById('wifiModal').classList.remove('active'); }
@@ -2096,6 +2152,7 @@
       const container = document.getElementById('maintenanceList');
       const badge = document.getElementById('maintCountBadge');
       const card = document.getElementById('maintCard');
+      const agendaMaintenanceBadge = document.getElementById('agendaMaintenanceBadge');
       container.innerHTML = '';
       
       const today = new Date();
@@ -2127,9 +2184,15 @@
       if (count > 0) {
         badge.style.display = 'flex';
         badge.textContent = count;
+        if (agendaMaintenanceBadge) {
+          agendaMaintenanceBadge.style.display = 'flex';
+          agendaMaintenanceBadge.textContent = count;
+          agendaMaintenanceBadge.title = `${count} cliente${count === 1 ? '' : 's'} no período de manutenção`;
+        }
         card.classList.add('urgency-low');
       } else {
         badge.style.display = 'none';
+        if (agendaMaintenanceBadge) agendaMaintenanceBadge.style.display = 'none';
         card.classList.remove('urgency-low');
         container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem;">Ninguna clienta en período de mantenimiento (15-20 días).</p>';
       }
