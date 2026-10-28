@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Anna Lash">
-  <meta name="theme-color" content="#5c2340">
+  <meta name="theme-color" content="#2b0d1f">
 
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="manifest" href="manifest.json">
@@ -944,15 +944,456 @@
       padding: 10px 12px;
       box-shadow: var(--shadow-card);
     }
+
+    /* =====================================================================
+       ANNA LASH DESIGNER — LUXO 3D · otimizado p/ iPhone 15 (393 × 852)
+       ===================================================================== */
+    :root {
+      --plum-deep: #2b0d1f;
+      --plum: #4a1a35;
+      --plum-mid: #6b2a4d;
+      --gold-hi: #fbeec6;
+      --gold: #e2c27e;
+      --gold-lo: #8a6330;
+      --tab-gap: max(10px, env(safe-area-inset-bottom));
+    }
+
+    body { padding: 0; min-height: 100dvh; }
+
+    /* ---------- Container tela cheia ---------- */
+    #appContainer.container {
+      max-width: 480px;
+      padding: 0 0 calc(var(--tab-gap) + 68px + 28px);
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    #appContainer .module-content { padding: 20px 16px 0; }
+
+    /* ---------- Cabeçalho: placa de ameixa com borda dourada 3D ---------- */
+    #appContainer .header,
+    #authScreen .header {
+      background:
+        radial-gradient(120% 80% at 50% 0%, var(--plum-mid) 0%, var(--plum) 48%, var(--plum-deep) 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 236, 190, 0.28),
+        0 2px 0 #d8b672,
+        0 5px 0 var(--gold-lo),
+        0 18px 26px -12px rgba(43, 13, 31, 0.7);
+      margin: 0;
+    }
+    #appContainer .header {
+      position: relative;
+      z-index: 40;
+      padding: calc(env(safe-area-inset-top, 0px) + 22px) 20px 28px;
+      border-radius: 0 0 30px 30px;
+    }
+    #appContainer .header .logo {
+      max-width: 88px;
+      margin: 0 0 10px;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
+    }
+    #appContainer .header-flourish,
+    #authScreen .header-flourish { color: var(--gold); margin: 14px auto 0; }
+
+    /* Nome principal — dourado extrudado */
+    .brand {
+      margin: 0;
+      font-style: normal;
+      line-height: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-first,
+    .brand-second {
+      display: inline-block;
+      font-family: var(--font-display);
+      background: linear-gradient(180deg, #fff6d6 0%, #f0d48f 26%, #c9a057 50%, #f6df9f 68%, #a8793a 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-first {
+      font-style: italic;
+      font-weight: 700;
+      font-size: 3.5rem;
+      letter-spacing: 0.5px;
+      padding: 0 6px 4px;
+      filter:
+        drop-shadow(0 1px 0 #9b7231) drop-shadow(0 2px 0 #85602a)
+        drop-shadow(0 3px 0 #6e4d21) drop-shadow(0 4px 0 #583c19)
+        drop-shadow(0 10px 10px rgba(0, 0, 0, 0.55));
+    }
+    .brand-second {
+      font-weight: 600;
+      font-size: 1.02rem;
+      letter-spacing: 0.44em;
+      padding-left: 0.44em;
+      filter: drop-shadow(0 1px 0 #7a5624) drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5));
+    }
+
+    /* Botões do cabeçalho (vidro + borda dourada) */
+    #appContainer .header-actions {
+      top: calc(env(safe-area-inset-top, 0px) + 12px);
+      right: 16px;
+    }
+    #appContainer .theme-toggle-btn,
+    #appContainer #logoutBtn {
+      width: 40px; height: 40px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(226, 194, 126, 0.55);
+      color: var(--gold-hi);
+      box-shadow: inset 0 1px 0 rgba(255, 236, 190, 0.25);
+    }
+
+    /* Cabeçalho compacto nas telas internas (fica fixo no topo) */
+    #appContainer:not(.on-home) .header {
+      position: sticky;
+      top: 0;
+      padding: calc(env(safe-area-inset-top, 0px) + 10px) 100px 14px 18px;
+      text-align: left;
+      border-radius: 0 0 22px 22px;
+    }
+    #appContainer:not(.on-home) .logo,
+    #appContainer:not(.on-home) .header-flourish { display: none; }
+    #appContainer:not(.on-home) .brand { flex-direction: row; align-items: baseline; gap: 8px; }
+    #appContainer:not(.on-home) .brand-first { font-size: 1.75rem; padding: 0 2px 2px; }
+    #appContainer:not(.on-home) .brand-second { font-size: 0.62rem; letter-spacing: 0.3em; padding-left: 0; }
+    #appContainer:not(.on-home) .header-actions { top: calc(env(safe-area-inset-top, 0px) + 7px); right: 12px; gap: 6px; }
+    #appContainer:not(.on-home) .theme-toggle-btn,
+    #appContainer:not(.on-home) #logoutBtn { width: 36px; height: 36px; }
+
+    /* ---------- Menu principal ---------- */
+    .main-menu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 14px;
+      margin-top: 4px;
+    }
+
+    /* Peça 3D: borda de extrusão + brilho superior; afunda ao toque */
+    .menu-card {
+      background: linear-gradient(160deg, #fffdfc 0%, #f8eaee 100%);
+      border: 1px solid #ead3da;
+      border-radius: 20px;
+      box-shadow:
+        inset 0 1px 0 #ffffff,
+        inset 0 -2px 0 rgba(122, 59, 86, 0.06),
+        0 5px 0 #dcbcc7,
+        0 14px 20px -8px rgba(90, 35, 60, 0.32);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .menu-card::before {
+      height: 100%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 42%);
+      transform: none;
+      pointer-events: none;
+    }
+    .menu-card:hover::before { transform: none; }
+    .menu-card:active {
+      transform: translateY(4px);
+      box-shadow: inset 0 1px 0 #ffffff, 0 1px 0 #dcbcc7, 0 5px 8px -4px rgba(90, 35, 60, 0.3);
+    }
+    body.dark-mode .menu-card {
+      background: linear-gradient(160deg, #372532 0%, #271a23 100%);
+      border-color: #4b3541;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 220, 235, 0.12),
+        0 5px 0 #120a0f,
+        0 14px 20px -8px rgba(0, 0, 0, 0.6);
+    }
+    body.dark-mode .menu-card::before { background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 42%); }
+    body.dark-mode .menu-card:active { box-shadow: inset 0 1px 0 rgba(255, 220, 235, 0.1), 0 1px 0 #120a0f; }
+
+    /* Medalhão dourado */
+    .menu-card-icon {
+      background: radial-gradient(circle at 32% 26%, #fff4d2 0%, #e8c882 36%, #bb8d45 72%, #8a6330 100%);
+      box-shadow:
+        inset 0 1px 1px rgba(255, 255, 255, 0.85),
+        inset 0 -3px 5px rgba(90, 55, 15, 0.45),
+        0 3px 6px rgba(70, 40, 10, 0.35);
+    }
+    .ic {
+      width: 22px; height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .menu-card-icon .ic { stroke: #3d1c2c; width: 24px; height: 24px; }
+
+    .main-menu-grid .category-entry {
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-end;
+      text-align: left;
+      gap: 0;
+      min-height: 138px;
+      padding: 16px 14px 15px;
+    }
+    .main-menu-grid .category-entry .menu-card-icon { width: 48px; height: 48px; margin: 0 0 14px; }
+    .main-menu-grid .category-arrow { display: none; }
+    .main-menu-grid .menu-card-title {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.16rem;
+      font-weight: 600;
+    }
+    .tile-sub {
+      margin-top: 3px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--text-muted);
+    }
+
+    /* Agenda: peça principal, ameixa + ouro */
+    .hero-tile {
+      grid-column: 1 / -1;
+      min-height: 168px !important;
+      background: linear-gradient(150deg, #6b2a4d 0%, #3d1430 58%, #2b0d1f 100%) !important;
+      border-color: #c9a057 !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 236, 190, 0.32),
+        0 6px 0 #1c0716,
+        0 18px 26px -8px rgba(43, 13, 31, 0.65) !important;
+    }
+    .hero-tile:active { transform: translateY(5px); box-shadow: inset 0 1px 0 rgba(255, 236, 190, 0.25), 0 1px 0 #1c0716, 0 6px 10px -4px rgba(43, 13, 31, 0.6) !important; }
+    .hero-tile::before { background: linear-gradient(180deg, rgba(255, 236, 190, 0.14) 0%, rgba(255, 236, 190, 0) 45%); }
+    .hero-tile .menu-card-icon { width: 54px !important; height: 54px !important; }
+    .hero-tile .menu-card-title { color: var(--gold-hi); font-size: 1.5rem !important; }
+    .hero-tile .tile-sub { color: #dcc3cf; font-size: 0.76rem; }
+    .hero-tile .agenda-alert-legend { margin-top: 12px; font-size: 0.68rem; }
+    .hero-tile .legend-today { color: #ff93aa; }
+    .hero-tile .legend-tomorrow { color: #f6cf78; }
+    .hero-tile .legend-maintenance { color: #ffbe66; }
+    #agendaCard .menu-badge { top: 14px; right: 16px; }
+    #agendaCard .menu-badge.tomorrow-badge { top: 14px; right: 44px; }
+    #agendaCard .menu-badge.maintenance-badge { top: 14px; right: 72px; }
+
+    /* ---------- Submenus ---------- */
+    .card:has(> .submenu-grid) { background: transparent; border: 0; padding: 0; }
+    .submenu-header { font-size: 1.3rem !important; margin-bottom: 18px !important; }
+    .submenu-grid { gap: 20px 14px; }
+    .submenu-grid .menu-card { min-height: 118px; }
+
+    /* ---------- Botão voltar (só histórico; Início fica na barra) ---------- */
+    .btn-back:not(.btn-back-history) { display: none; }
+    .btn-back-history {
+      min-height: 40px;
+      padding: 8px 16px;
+      margin-bottom: 16px;
+      border-radius: 999px;
+      background: var(--primary-light);
+      border: 1px solid var(--border-color);
+      color: var(--primary);
+      box-shadow: 0 3px 0 var(--border-color);
+    }
+
+    /* ---------- Cartões, métricas e botões ---------- */
+    .card {
+      border-radius: 20px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 12px 22px -14px rgba(90, 35, 60, 0.35);
+    }
+    body.dark-mode .card { box-shadow: inset 0 1px 0 rgba(255, 220, 235, 0.08), 0 12px 22px -14px rgba(0, 0, 0, 0.6); }
+    .dashboard-summary { border-radius: 20px; }
+    .dashboard-metric {
+      border-radius: 14px;
+      box-shadow: inset 0 1px 0 #ffffff, 0 3px 0 var(--border-color);
+    }
+    body.dark-mode .dashboard-metric { box-shadow: inset 0 1px 0 rgba(255, 220, 235, 0.08), 0 3px 0 #120a0f; }
+    button {
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 4px 0 rgba(0, 0, 0, 0.26), 0 10px 16px -8px rgba(60, 20, 40, 0.45);
+    }
+    button:active {
+      transform: translateY(3px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 0 rgba(0, 0, 0, 0.26);
+    }
+
+    /* ---------- Barra inferior flutuante (polegar) ---------- */
+    .tabbar {
+      position: fixed;
+      left: 12px; right: 12px;
+      bottom: var(--tab-gap);
+      max-width: 456px;
+      margin: 0 auto;
+      height: 68px;
+      z-index: 60;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 2px;
+      padding: 6px;
+      border-radius: 26px;
+      background: linear-gradient(180deg, #5a2142 0%, #33112a 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 236, 190, 0.3),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(226, 194, 126, 0.55),
+        0 5px 0 #1c0716,
+        0 20px 28px -8px rgba(20, 5, 14, 0.7);
+    }
+    .tabbar button {
+      width: auto;
+      min-height: 56px;
+      margin: 0;
+      padding: 0;
+      background: none;
+      border-radius: 20px;
+      color: #d9bfcb;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      box-shadow: none;
+      transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
+    }
+    .tabbar .ic { width: 23px; height: 23px; }
+    .tabbar button:active { transform: scale(0.94); box-shadow: none; }
+    .tabbar button.active {
+      color: #3b1a28;
+      background: linear-gradient(180deg, #fbeec6 0%, #e2c27e 55%, #b88a43 100%);
+      box-shadow:
+        inset 0 1px 0 #fff8dc,
+        inset 0 -3px 0 rgba(90, 55, 15, 0.35),
+        0 3px 0 #7a5624,
+        0 7px 10px rgba(0, 0, 0, 0.4);
+      transform: translateY(-5px);
+    }
+
+    /* ---------- Login ---------- */
+    #authScreen {
+      max-width: 480px;
+      min-height: 100dvh;
+      padding: 0 24px calc(32px + env(safe-area-inset-bottom, 0px));
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    #authScreen .header {
+      margin: 0 -24px 26px;
+      padding: calc(env(safe-area-inset-top, 0px) + 40px) 24px 30px;
+      border-radius: 0 0 30px 30px;
+    }
+    #authScreen .logo { filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45)); }
+
+    /* ===== Ajustes: logo maior, Mendonça, Agenda em destaque ===== */
+    #appContainer .header .logo { max-width: 190px; margin: 0 0 12px; }
+    #authScreen .logo { max-width: 170px; }
+    .brand { gap: 4px; }
+    .brand-mid {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 600;
+      font-size: 1.75rem;
+      letter-spacing: 0.6px;
+      line-height: 1.1;
+      background: linear-gradient(180deg, #fff6d6 0%, #f0d48f 26%, #c9a057 52%, #f6df9f 70%, #a8793a 100%);
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 1px 0 #9b7231) drop-shadow(0 2px 0 #6e4d21) drop-shadow(0 6px 6px rgba(0,0,0,.5));
+    }
+    .brand-second { margin-top: 6px; }
+    #appContainer:not(.on-home) .header { padding-right: 150px; }
+    #appContainer:not(.on-home) .brand { flex-wrap: wrap; align-items: baseline; column-gap: 8px; row-gap: 3px; }
+    #appContainer:not(.on-home) .brand-mid { font-size: 1.15rem; }
+    #appContainer:not(.on-home) .brand-second { flex-basis: 100%; margin-top: 0; font-size: 0.58rem; }
+
+    .main-menu-grid { grid-template-columns: 1fr; }
+    .main-menu-grid .hero-tile {
+      align-items: stretch;
+      justify-content: flex-start;
+      text-align: left;
+      padding: 20px 18px 18px;
+      min-height: max(400px, calc(100dvh - 450px)) !important;
+    }
+    .hero-head { display: flex; align-items: center; gap: 14px; }
+    .main-menu-grid .hero-tile .menu-card-icon {
+      width: 60px !important; height: 60px !important; margin: 0 !important;
+      background: radial-gradient(circle at 32% 26%, #fff4d2 0%, #e8c882 36%, #bb8d45 72%, #8a6330 100%) !important;
+    }
+    .hero-tile .menu-card-icon .ic { width: 28px; height: 28px; }
+    #agendaCard .menu-card-title { color: var(--gold-hi) !important; font-size: 1.7rem !important; }
+    #agendaCard .tile-sub { color: #dcc3cf; font-size: 0.78rem; }
+
+    .led-list { display: flex; flex-direction: column; gap: 12px; margin-top: 22px; width: 100%; }
+    .led-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 15px 14px;
+      border-radius: 18px;
+      background: rgba(0, 0, 0, 0.3);
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5), inset 0 -1px 0 rgba(255, 236, 190, 0.14);
+      transition: opacity 0.2s;
+    }
+    .led-row:has(.menu-badge[style*="none"]) { opacity: 0.6; }
+    .led-dot {
+      flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ffffff 0%, var(--c) 42%, var(--c2) 100%);
+      box-shadow: 0 0 0 5px color-mix(in srgb, var(--c) 22%, transparent), 0 0 18px var(--c);
+    }
+    .led-row:has(.menu-badge:not([style*="none"])) .led-dot { animation: ledPulse 1s infinite ease-in-out; }
+    .led-today { --c: #ff5c7c; --c2: #b81f45; }
+    .led-tomorrow { --c: #ffc94d; --c2: #b8841a; }
+    .led-maint { --c: #ffa24a; --c2: #b8561a; }
+    .led-text { flex: 1; min-width: 0; }
+    .led-text strong { display: block; font-size: 1.12rem; font-weight: 800; color: var(--gold-hi); }
+    .led-text small { display: block; margin-top: 2px; font-size: 0.78rem; font-weight: 600; line-height: 1.3; color: #dcc3cf; }
+    #agendaCard .led-row .menu-badge,
+    #agendaCard .led-row .menu-badge.tomorrow-badge,
+    #agendaCard .led-row .menu-badge.maintenance-badge {
+      position: static; top: auto; right: auto; flex: 0 0 auto;
+      min-width: 38px; height: 38px; font-size: 1.1rem; border-width: 2px;
+    }
+    .hero-cta {
+      margin-top: auto; padding-top: 18px; text-align: right;
+      font-size: 0.9rem; font-weight: 800; color: var(--gold);
+    }
+
+    /* ===== Alertas em "Próximos Horários" + logo no rodapé de cada tela ===== */
+    #nextAppsCard .menu-badge { top: 12px; right: 12px; min-width: 28px; height: 28px; font-size: 0.9rem; }
+    #nextAppsCard .menu-badge.tomorrow-badge { top: 46px; }
+
+    .module-content:not(#module-menu)::after {
+      content: '';
+      display: block;
+      height: 150px;
+      margin: 30px auto 6px;
+      background: url('logo.png') center / contain no-repeat;
+    }
+    body.dark-mode .module-content:not(#module-menu)::after {
+      background:
+        url('logo.png') center / auto 70% no-repeat,
+        radial-gradient(120% 120% at 50% 0%, #6b2a4d 0%, #3d1430 70%, #2b0d1f 100%);
+      border-radius: 24px;
+      box-shadow: inset 0 1px 0 rgba(255, 236, 190, 0.25), 0 3px 0 #8a6330;
+    }
+
   </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.2"/><path d="M3 19.5c.6-3.4 3-5 6-5s5.4 1.6 6 5"/><path d="M16 5.6a3 3 0 0 1 0 5.8M17.5 14.8c1.9.5 3.1 2 3.5 4.7"/></symbol>
+<symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M14.8 9.2c-.5-.9-1.6-1.4-2.8-1.4-1.6 0-2.7.8-2.7 2 0 3 5.6 1.4 5.6 4.3 0 1.2-1.2 2.1-2.9 2.1-1.3 0-2.4-.5-3-1.5M12 6.5v1.3M12 16.3v1.2"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9z"/><path d="M18.5 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></symbol>
+<symbol id="i-bars" viewBox="0 0 24 24"><path d="M5 19.5V11M10.5 19.5V5M16 19.5v-6.5M21 19.5H3"/></symbol>
+</defs></svg>
+<!-- BARRA INFERIOR (iPhone 15) -->
 
   <!-- TELA DE AUTENTICAÇÃO (EMAIL/SENHA) -->
   <div id="authScreen" style="display:none;">
     <div class="header">
       <img src="logo.png" alt="Logo" class="logo" onerror="this.style.display='none'">
-      <h1>Anna Mendonça Lash Designer</h1>
+      <h1 class="brand" aria-label="Anna Mendonça Lash Designer"><span class="brand-first">Anna</span><span class="brand-mid">Mendonça</span><span class="brand-second">Lash Designer</span></h1>
       <span class="header-flourish" aria-hidden="true">
         <svg viewBox="0 0 92 12" xmlns="http://www.w3.org/2000/svg">
           <path d="M2 8 C 20 -2, 34 14, 46 6 S 72 -2, 90 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
@@ -960,33 +1401,42 @@
         </svg>
       </span>
     </div>
-    <p class="auth-subtitle">Iniciá sesión para gestionar tu estudio</p>
+    <p class="auth-subtitle">Entre para gerenciar seu estúdio</p>
 
     <div id="authError" class="auth-error"></div>
     <div id="authSuccess" class="auth-success"></div>
 
     <form id="loginForm" onsubmit="handleLogin(event)">
       <div class="form-group">
-        <label for="authEmail">Correo electrónico</label>
-        <input type="email" id="authEmail" required autocomplete="username" placeholder="tu@correo.com">
+        <label for="authEmail">E-mail</label>
+        <input type="email" id="authEmail" required autocomplete="username" placeholder="seu@email.com">
       </div>
       <div class="form-group">
-        <label for="authPassword">Contraseña</label>
+        <label for="authPassword">Senha</label>
         <input type="password" id="authPassword" required autocomplete="current-password" placeholder="••••••••">
       </div>
       <button type="submit" id="loginBtn">Entrar</button>
     </form>
-    <button type="button" class="auth-forgot" onclick="handlePasswordReset()">¿Olvidaste tu contraseña?</button>
+    <button type="button" class="auth-forgot" onclick="handlePasswordReset()">Esqueceu a senha?</button>
   </div>
 
-  <div class="container" id="appContainer" style="display:none;">
+  <div class="container on-home" id="appContainer" style="display:none;">
+    <nav class="tabbar" aria-label="Navegação principal">
+      <button type="button" data-tab="home" class="active" onclick="tabGo('home')"><svg class="ic"><use href="#i-home"/></svg><span>Início</span></button>
+      <button type="button" data-tab="agenda" onclick="tabGo('agenda')"><svg class="ic"><use href="#i-cal"/></svg><span>Agenda</span></button>
+      <button type="button" data-tab="clientes" onclick="tabGo('clientes')"><svg class="ic"><use href="#i-users"/></svg><span>Clientes</span></button>
+      <button type="button" data-tab="financeiro" onclick="tabGo('financeiro')"><svg class="ic"><use href="#i-coin"/></svg><span>Finanças</span></button>
+      <button type="button" data-tab="ferramentas" onclick="tabGo('ferramentas')"><svg class="ic"><use href="#i-spark"/></svg><span>Ferramentas</span></button>
+    </nav>
+
     <div class="header">
       <div class="header-actions">
-        <button type="button" id="logoutBtn" onclick="handleLogout()" title="Cerrar sesión">🚪</button>
-        <button type="button" id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" title="Alternar Modo Nocturno">🌙</button>
+        <button type="button" id="summaryBtn" class="theme-toggle-btn" onclick="openDashboardSummary()" title="Resumo do Estúdio" aria-label="Resumo do Estúdio"><svg class="ic"><use href="#i-bars"/></svg></button>
+        <button type="button" id="logoutBtn" onclick="handleLogout()" title="Sair">🚪</button>
+        <button type="button" id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" title="Alternar modo noturno">🌙</button>
       </div>
       <img src="logo.png" alt="Logo" class="logo" onerror="this.style.display='none'">
-      <h1>Anna Mendonça Lash Designer</h1>
+      <h1 class="brand" aria-label="Anna Mendonça Lash Designer"><span class="brand-first">Anna</span><span class="brand-mid">Mendonça</span><span class="brand-second">Lash Designer</span></h1>
       <span class="header-flourish" aria-hidden="true">
         <svg viewBox="0 0 92 12" xmlns="http://www.w3.org/2000/svg">
           <path d="M2 8 C 20 -2, 34 14, 46 6 S 72 -2, 90 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
@@ -998,11 +1448,18 @@
     <!-- TELA INICIAL: MENU PRINCIPAL -->
     <div id="module-menu" class="module-content active">
       <div class="main-menu-grid">
-        <div class="menu-card category-entry" onclick="openDashboardSummary()"><div class="menu-card-icon">📊</div><div class="menu-card-title">Resumo do Estúdio</div><span class="category-arrow">›</span></div>
-        <div class="menu-card category-entry" id="agendaCard" onclick="openScreen('module-submenu-agenda')"><div class="menu-card-icon">📅</div><div><div class="menu-card-title">Agenda <span class="menu-badge" id="agendaCountBadge" style="display:none;"></span><span class="menu-badge tomorrow-badge" id="agendaTomorrowCountBadge" style="display:none;"></span><span class="menu-badge maintenance-badge" id="agendaMaintenanceBadge" style="display:none;" title="Clientes em período de manutenção"></span></div><div class="agenda-alert-legend"><span class="legend-today">● Hoje</span><span class="legend-tomorrow">● Amanhã</span><span class="legend-maintenance">● Manutenção</span></div></div><span class="category-arrow">›</span></div>
-        <div class="menu-card category-entry" onclick="openScreen('module-submenu-clientes')"><div class="menu-card-icon">👥</div><div class="menu-card-title">Clientes</div><span class="category-arrow">›</span></div>
-        <div class="menu-card category-entry" onclick="openScreen('module-submenu-financeiro')"><div class="menu-card-icon">💰</div><div class="menu-card-title">Financeiro</div><span class="category-arrow">›</span></div>
-        <div class="menu-card category-entry" onclick="openScreen('module-submenu-ferramentas')"><div class="menu-card-icon">🧰</div><div class="menu-card-title">Ferramentas</div><span class="category-arrow">›</span></div>
+        <div class="menu-card category-entry hero-tile" id="agendaCard" onclick="openScreen('module-submenu-agenda')">
+          <div class="hero-head">
+            <div class="menu-card-icon"><svg class="ic"><use href="#i-cal"/></svg></div>
+            <div><div class="menu-card-title">Agenda</div><div class="tile-sub">Horários, manutenções e aniversários</div></div>
+          </div>
+          <div class="led-list">
+            <div class="led-row led-today"><span class="led-dot"></span><div class="led-text"><strong>Hoje</strong><small>Atendimentos marcados para hoje</small></div><span class="menu-badge" id="agendaCountBadge" style="display:none;"></span></div>
+            <div class="led-row led-tomorrow"><span class="led-dot"></span><div class="led-text"><strong>Amanhã</strong><small>Atendimentos marcados para amanhã</small></div><span class="menu-badge tomorrow-badge" id="agendaTomorrowCountBadge" style="display:none;"></span></div>
+            <div class="led-row led-maint"><span class="led-dot"></span><div class="led-text"><strong>Manutenção</strong><small>Clientes com manutenção a vencer</small></div><span class="menu-badge maintenance-badge" id="agendaMaintenanceBadge" style="display:none;" title="Clientes em período de manutenção"></span></div>
+          </div>
+          <div class="hero-cta">Abrir agenda ›</div>
+        </div>
       </div>
     </div>
 
@@ -1028,7 +1485,7 @@
       <div class="card"><h2 class="submenu-header">📅 Agenda</h2>
         <div class="submenu-grid">
           <div class="menu-card" onclick="openScreen('module-agendar')"><div class="menu-card-icon">📅</div><div class="menu-card-title">Agendar / Reservar</div></div>
-          <div class="menu-card" onclick="openScreen('module-agenda')"><div class="menu-card-icon">📌</div><div class="menu-card-title">Próximos Horários</div></div>
+          <div id="nextAppsCard" class="menu-card" onclick="openScreen('module-agenda')"><span class="menu-badge" id="nextTodayBadge" style="display:none;" title="Hoje"></span><span class="menu-badge tomorrow-badge" id="nextTomorrowBadge" style="display:none;" title="Amanhã"></span><div class="menu-card-icon">📌</div><div class="menu-card-title">Próximos Horários</div></div>
           <div id="maintCard" class="menu-card maint-card" onclick="openScreen('module-manutencion')"><span id="maintCountBadge" class="menu-badge" style="display:none;">0</span><div class="menu-card-icon">⏰</div><div class="menu-card-title">Manutenção</div></div>
           <div id="bdayCard" class="menu-card bday-card" onclick="openScreen('module-cumpleanos')"><span id="bdayCountBadge" class="menu-badge" style="display:none;">0</span><div class="menu-card-icon">🎂</div><div class="menu-card-title">Aniversários</div></div>
         </div>
@@ -1065,7 +1522,7 @@
       <div class="card"><h2 class="submenu-header">🧰 Ferramentas</h2>
         <div class="submenu-grid">
           <button type="button" class="menu-card cita-card" onclick="openScreen('module-cita')"><div class="menu-card-icon">📄</div><div class="menu-card-title">CITA</div></button>
-          <div class="menu-card wifi-card" onclick="openWifiModal()"><div class="menu-card-icon">📶</div><div class="menu-card-title">WIFI Visitas</div></div>
+          <div class="menu-card wifi-card" onclick="openWifiModal()"><div class="menu-card-icon">📶</div><div class="menu-card-title">Wi-Fi Visitas</div></div>
           <div class="menu-card" onclick="openInstagramModal()"><div class="menu-card-icon">📷</div><div class="menu-card-title">Perfil Instagram</div></div>
         </div>
       </div>
@@ -1075,7 +1532,7 @@
     <div id="module-manutencion" class="module-content">
       <button class="btn-back" onclick="goHome()">⬅ Menú Principal</button>
       <div class="card">
-        <h2>⏰ Clientes con Mantenimiento Por Vencer (15 a 20 días)</h2>
+        <h2>⏰ Clientes com Manutenção a Vencer (15 a 20 dias)</h2>
         <div id="maintenanceList" class="maintenance-list"></div>
       </div>
     </div>
@@ -1084,7 +1541,7 @@
     <div id="module-cumpleanos" class="module-content">
       <button class="btn-back" onclick="goHome()">⬅ Menú Principal</button>
       <div class="card">
-        <h2>🎉 Próximos Cumpleaños (Hoy y Mañana)</h2>
+        <h2>🎉 Próximos Aniversários (Hoje e Amanhã)</h2>
         <div id="bdayList" class="bday-list"></div>
       </div>
     </div>
@@ -1093,11 +1550,11 @@
     <div id="module-agendar" class="module-content">
       <button class="btn-back" onclick="goHome()">⬅ Menú Principal</button>
       <div class="card">
-          <h2 id="appointmentFormTitle">📅 Agendar / Reservar Horario</h2>
+          <h2 id="appointmentFormTitle">📅 Agendar / Reservar Horário</h2>
         <form id="appointmentForm">
           <input type="hidden" id="appointmentId">
           <div class="form-group">
-            <label for="appClientSearch">Buscar cliente por nombre o teléfono</label>
+            <label for="appClientSearch">Buscar cliente por nome ou telefone</label>
             <div class="client-search-wrapper">
               <input type="search" id="appClientSearch" placeholder="Digite nome ou telefone..." oninput="filterAppointmentClients()" autocomplete="off">
               <div id="appClientSearchResults" class="client-search-results" role="listbox"></div>
@@ -1106,16 +1563,16 @@
           <div class="form-group">
             <label for="appClientSelect">Cliente *</label>
             <select id="appClientSelect" required>
-              <option value="">Cargando clientes...</option>
+              <option value="">Carregando clientes...</option>
             </select>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label for="appDate">Fecha de la Cita *</label>
+              <label for="appDate">Data do Atendimento *</label>
               <input type="date" id="appDate" required>
             </div>
             <div class="form-group">
-              <label for="appTime">Horario *</label>
+              <label for="appTime">Horário *</label>
               <input type="time" id="appTime" required>
             </div>
           </div>
@@ -1132,15 +1589,15 @@
             </div>
             <div class="form-group">
               <label for="appService">Procedimento</label>
-              <input type="text" id="appService" placeholder="Ej: Vol Brasileño + Cejas">
+              <input type="text" id="appService" placeholder="Ex: Volume Brasileiro + Sobrancelhas">
             </div>
             <div class="form-group">
-              <label for="appDeposit">Seña (Gs.)</label>
-              <input type="number" id="appDeposit" step="any" min="0" placeholder="Ej: 50000">
+              <label for="appDeposit">Sinal (Gs.)</label>
+              <input type="number" id="appDeposit" step="any" min="0" placeholder="Ex: 50000">
             </div>
           </div>
-          <button type="submit" id="btnSaveAppointment">Confirmar Agendamiento</button>
-          <button type="button" class="btn-cancel-edit" id="btnCancelAppointmentEdit" onclick="resetAppointmentForm()">Cancelar Edición</button>
+          <button type="submit" id="btnSaveAppointment">Confirmar Agendamento</button>
+          <button type="button" class="btn-cancel-edit" id="btnCancelAppointmentEdit" onclick="resetAppointmentForm()">Cancelar Edição</button>
         </form>
       </div>
     </div>
@@ -1149,11 +1606,11 @@
     <div id="module-ficha" class="module-content">
       <button class="btn-back" onclick="goHome()">⬅ Menú Principal</button>
       <div class="card">
-        <h2 id="formTitle">📝 Nueva Ficha / Servicio Realizado</h2>
+        <h2 id="formTitle">📝 Nova Ficha / Serviço Realizado</h2>
 
         <!-- HISTORIAL DE LOS ÚLTIMOS TRABAJOS (visible al editar una clienta existente) -->
         <div id="fichaHistoryPanel" style="display:none; margin-bottom:16px;">
-          <label style="margin-bottom:8px;">📜 Últimos Trabajos de esta Clienta</label>
+          <label style="margin-bottom:8px;">📜 Últimos Trabalhos desta Clienta</label>
           <div id="fichaHistoryList" style="display:flex; flex-direction:column; gap:8px;"></div>
         </div>
 
@@ -1162,62 +1619,76 @@
           <input type="hidden" id="appointmentIdToClear">
           <input type="hidden" id="photoUrl">
 
+          <div class="photo-upload-container">
+            <div>📸 Foto da clienta (opcional)</div>
+            <img id="photoPreview" class="photo-preview" alt="Prévia da foto">
+            <div id="photoCurrentLabel" class="photo-current-label"></div>
+            <div class="photo-actions">
+              <button type="button" onclick="document.getElementById('photoCameraInput').click()">📷 Câmera</button>
+              <button type="button" class="btn-gallery" onclick="document.getElementById('photoGalleryInput').click()">🖼️ Galeria</button>
+              <button type="button" id="btnRemovePhoto" class="btn-remove-photo" onclick="removeClientPhoto()">🗑️ Remover</button>
+            </div>
+            <input type="file" id="photoCameraInput" accept="image/*" capture="environment" hidden onchange="handlePhotoSelect(event)">
+            <input type="file" id="photoGalleryInput" accept="image/*" hidden onchange="handlePhotoSelect(event)">
+            <div id="uploadStatus" class="upload-status"></div>
+          </div>
+
           <div class="form-group">
-            <label for="name">Nombre de la Clienta *</label>
-            <input type="text" id="name" required placeholder="Ej: María López">
+            <label for="name">Nome da Clienta *</label>
+            <input type="text" id="name" required placeholder="Ex: Maria Lopes">
           </div>
           
           <div class="form-row">
             <div class="form-group">
               <label for="phone">WhatsApp / Tel *</label>
-              <input type="tel" id="phone" required placeholder="Ej: 0981123456">
+              <input type="tel" id="phone" required placeholder="Ex: 0981123456">
             </div>
             <!-- CAMPO: FECHA CUMPLEAÑOS -->
             <div class="form-group">
-              <label for="birthday">Fecha de Cumpleaños 🎂</label>
+              <label for="birthday">Data de Aniversário 🎂</label>
               <input type="date" id="birthday">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="serviceDate">Fecha de Aplicación</label>
+              <label for="serviceDate">Data da Aplicação</label>
               <input type="date" id="serviceDate">
             </div>
             <div class="form-group">
-              <label for="price">Monto Cobrado (Gs.)</label>
-              <input type="number" id="price" step="any" min="0" placeholder="Ej: 150000">
+              <label for="price">Valor Cobrado (Gs.)</label>
+              <input type="number" id="price" step="any" min="0" placeholder="Ex: 150000">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="technique">Pestañas</label>
+              <label for="technique">Cílios</label>
               <select id="technique">
-                <option value="Sin servicio">Sin servicio</option>
-                <option value="Rimel Soft">Rimel Soft</option>
-                <option value="Efecto Rímel">Efecto Rímel</option>
-                <option value="Vol Brasileño">Vol Brasileño</option>
-                <option value="Vol Egipcio">Vol Egipcio</option>
-                <option value="Mega Volumen">Mega Volumen</option>
+                <option value="Sem serviço">Sem serviço</option>
+                <option value="Rímel Soft">Rímel Soft</option>
+                <option value="Efeito Rímel">Efeito Rímel</option>
+                <option value="Volume Brasileiro">Volume Brasileiro</option>
+                <option value="Volume Egípcio">Volume Egípcio</option>
+                <option value="Mega Volume">Mega Volume</option>
               </select>
             </div>
             <div class="form-group">
-              <label for="cejas">Cejas</label>
+              <label for="cejas">Sobrancelhas</label>
               <select id="cejas">
-                <option value="Sin servicio" selected>Sin servicio</option>
+                <option value="Sem serviço" selected>Sem serviço</option>
                 <option value="Henna">Henna</option>
-                <option value="Diseño de cejas">Diseño de cejas</option>
+                <option value="Design de sobrancelhas">Design de sobrancelhas</option>
                 <option value="Brow Lamination">Brow Lamination</option>
               </select>
             </div>
           </div>
 
           <div class="form-group">
-            <label for="removal">Retiro</label>
+            <label for="removal">Remoção</label>
             <select id="removal">
-              <option value="No" selected>No</option>
-              <option value="Sí">Sí</option>
+              <option value="Não" selected>Não</option>
+              <option value="Sim">Sim</option>
             </select>
           </div>
 
@@ -1232,7 +1703,7 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="thickness">Espesor</label>
+              <label for="thickness">Espessura</label>
               <select id="thickness">
                 <option value="0.05mm">0.05 mm</option>
                 <option value="0.07mm" selected>0.07 mm</option>
@@ -1243,12 +1714,12 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label for="mapping">Mapeo</label>
-              <input type="text" id="mapping" placeholder="Ej: Cat Eyes 8-12mm">
+              <label for="mapping">Mapeamento</label>
+              <input type="text" id="mapping" placeholder="Ex: Cat Eyes 8-12mm">
             </div>
             <div class="form-group">
-              <label for="adhesive">Adhesivo / Pegamento</label>
-              <input type="text" id="adhesive" placeholder="Ej: Elite HS-16">
+              <label for="adhesive">Adesivo / Cola</label>
+              <input type="text" id="adhesive" placeholder="Ex: Elite HS-16">
             </div>
           </div>
 
@@ -1258,12 +1729,12 @@
           </div>
 
           <div class="form-group">
-            <label for="notes">Observaciones / Alergias</label>
+            <label for="notes">Observações / Alergias</label>
             <textarea id="notes" rows="2"></textarea>
           </div>
 
-          <button type="submit" id="btnSaveClient">Guardar en la Nube</button>
-          <button type="button" class="btn-cancel-edit" id="btnCancelEdit" onclick="resetClientForm()">Cancelar Edición</button>
+          <button type="submit" id="btnSaveClient">Salvar na Nuvem</button>
+          <button type="button" class="btn-cancel-edit" id="btnCancelEdit" onclick="resetClientForm()">Cancelar Edição</button>
         </form>
       </div>
     </div>
@@ -1326,7 +1797,7 @@
     <div id="module-top" class="module-content">
       <button class="btn-back" onclick="goHome()">⬅ Menú Principal</button>
       <div class="card">
-        <h2>🏆 Top 3 Clientes con Más Visitas</h2>
+        <h2>🏆 Top 3 Clientes com Mais Visitas</h2>
         <div class="top-clients-grid" id="topClientsList"></div>
       </div>
     </div>
@@ -1336,14 +1807,14 @@
       <button class="btn-back" onclick="goHome()">⬅ Menú Principal</button>
       
       <div class="tab-container">
-        <button type="button" id="tabBtnFinanzas" class="tab-btn active" onclick="switchFinTab('finanza')">📊 Finanzas</button>
+        <button type="button" id="tabBtnFinanzas" class="tab-btn active" onclick="switchFinTab('finanza')">📊 Finanças</button>
         <button type="button" id="tabBtnClientes" class="tab-btn" onclick="switchFinTab('clientes')">👥 Clientes</button>
       </div>
 
       <!-- ABA 1: FINANZAS -->
       <div id="tabContentFinanza" class="tab-content active">
         <div class="card">
-          <h2>📊 Resumen Financiero</h2>
+          <h2>📊 Resumo Financeiro</h2>
           <div class="finance-filter">
             <div class="form-group">
               <label for="financeMonthSelect">Mês</label>
@@ -1357,32 +1828,32 @@
           <p id="financePeriodNote" class="finance-note"></p>
           <div class="financial-summary">
             <div class="fin-card">
-              <span>Facturación del Período</span>
+              <span>Faturamento do Período</span>
               <strong id="monthTotal">Gs. 0</strong>
             </div>
             <div class="fin-card">
-              <span>Atendimientos</span>
+              <span>Atendimentos</span>
               <strong id="monthAppointments">0</strong>
             </div>
             <div class="fin-card">
-              <span>Ticket Medio</span>
+              <span>Ticket Médio</span>
               <strong id="monthAverage">Gs. 0</strong>
             </div>
             <div class="fin-card">
-              <span>Procedimiento Más Realizado</span>
+              <span>Procedimento Mais Realizado</span>
               <strong id="topProcedure" class="fin-detail">—</strong>
             </div>
           </div>
-          <button type="button" class="btn-excel" onclick="exportToExcel()">📊 Exportar Reporte (.csv)</button>
+          <button type="button" class="btn-excel" onclick="exportToExcel()">📊 Exportar Relatório (.csv)</button>
         </div>
       </div>
 
       <!-- ABA 2: CLIENTES -->
       <div id="tabContentClientes" class="tab-content">
         <div class="card">
-          <h2>👥 Lista de Clientes & Historial</h2>
+          <h2>👥 Lista de Clientes & Histórico</h2>
           <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Buscar por clienta, técnica o teléfono..." oninput="filterClients()">
+            <input type="text" id="searchInput" placeholder="Buscar por clienta, técnica ou telefone..." oninput="filterClients()">
           </div>
           <div class="list-container" id="clientList"></div>
         </div>
@@ -1416,9 +1887,9 @@
   <div id="wifiModal" class="modal-overlay" onclick="closeWifiModal()">
     <div class="modal-card" onclick="event.stopPropagation()">
       <h3>📶 Wi-Fi Visitas</h3>
-      <p style="font-size:0.85rem; color:var(--text-muted);">Apunta la cámara para conectar:</p>
+      <p style="font-size:0.85rem; color:var(--text-muted);">Aponte a câmera para conectar:</p>
       <img src="wifi.png" alt="QR Code Wi-Fi" class="qr-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300?text=Foto+wifi.png+nao+encontrada';">
-      <button type="button" style="background:#7f8c8d; margin-top:10px;" onclick="closeWifiModal()">Cerrar</button>
+      <button type="button" style="background:#7f8c8d; margin-top:10px;" onclick="closeWifiModal()">Fechar</button>
     </div>
   </div>
 
@@ -1428,7 +1899,7 @@
       <h3>📷 Perfil Instagram</h3>
       <p style="font-size:0.85rem; color:var(--text-muted);">Aponte a câmera para acessar o perfil:</p>
       <img src="instagram-qrcode.png" alt="QR Code do Perfil Instagram" class="qr-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300?text=Adicione+instagram-qrcode.png';">
-      <button type="button" style="background:#7f8c8d; margin-top:10px;" onclick="closeInstagramModal()">Cerrar</button>
+      <button type="button" style="background:#7f8c8d; margin-top:10px;" onclick="closeInstagramModal()">Fechar</button>
     </div>
   </div>
 
@@ -1438,7 +1909,7 @@
       <h3>📤 Encaminhar CITA</h3>
       <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">Escolha a cliente para abrir o WhatsApp:</p>
       <div class="form-group" style="text-align:left;">
-        <label for="citaClientSearch">Buscar por nombre o teléfono</label>
+        <label for="citaClientSearch">Buscar por nome ou telefone</label>
         <div class="client-search-wrapper">
           <input type="search" id="citaClientSearch" placeholder="Digite nome ou telefone..." oninput="filterCitaClients()" autocomplete="off">
           <div id="citaClientSearchResults" class="client-search-results" role="listbox"></div>
@@ -1453,7 +1924,7 @@
       <button type="button" class="btn-whatsapp-cita" id="citaWhatsAppBtn" onclick="openCitaWhatsApp()" disabled>💬 Abrir WhatsApp</button>
       <button type="button" class="btn-share-cita" id="citaShareBtn" onclick="shareCitaImage()" disabled>📎 Compartilhar imagem</button>
       <p class="share-help">“Abrir WhatsApp” seleciona a conversa da cliente. “Compartilhar imagem” permite enviar a imagem diretamente nos aparelhos compatíveis.</p>
-      <button type="button" style="background:#7f8c8d; margin-top:12px;" onclick="closeCitaShareModal()">Cerrar</button>
+      <button type="button" style="background:#7f8c8d; margin-top:12px;" onclick="closeCitaShareModal()">Fechar</button>
     </div>
   </div>
 
@@ -1461,17 +1932,17 @@
   <div id="photoZoomModal" class="modal-overlay" onclick="closePhotoZoomModal()">
     <div class="modal-card" onclick="event.stopPropagation()">
       <img id="zoomedPhoto" class="full-photo" src="" alt="Foto Ampliada">
-      <button type="button" style="background:#7f8c8d; margin-top:12px;" onclick="closePhotoZoomModal()">Cerrar</button>
+      <button type="button" style="background:#7f8c8d; margin-top:12px;" onclick="closePhotoZoomModal()">Fechar</button>
     </div>
   </div>
 
   <!-- MODAL HISTORIAL DE TRABAJOS -->
   <div id="historyModal" class="modal-overlay" onclick="closeHistoryModal()">
     <div class="modal-card" style="max-width:420px; text-align:left;" onclick="event.stopPropagation()">
-      <h3 style="text-align:center;">📜 Historial de Trabajos</h3>
+      <h3 style="text-align:center;">📜 Histórico de Trabalhos</h3>
       <p id="historyClientName" style="text-align:center; color:var(--text-muted); font-size:0.85rem; margin-bottom:14px;"></p>
       <div id="historyList" style="display:flex; flex-direction:column; gap:10px; max-height:50vh; overflow-y:auto;"></div>
-      <button type="button" style="background:#7f8c8d; margin-top:14px;" onclick="closeHistoryModal()">Cerrar</button>
+      <button type="button" style="background:#7f8c8d; margin-top:14px;" onclick="closeHistoryModal()">Fechar</button>
     </div>
   </div>
 
@@ -1494,6 +1965,9 @@
     const storage = firebase.storage();
 
     let clients = [];
+    // Valores antigos (espanhol) já salvos no banco -> português
+    const LEGACY_PT = {'Sin servicio':'Sem serviço','Rimel Soft':'Rímel Soft','Efecto Rímel':'Efeito Rímel','Vol Brasileño':'Volume Brasileiro','Vol Egipcio':'Volume Egípcio','Mega Volumen':'Mega Volume','Diseño de cejas':'Design de sobrancelhas','Sin procedimiento':'Sem procedimento','Sí':'Sim','No':'Não'};
+    function pt(v) { return LEGACY_PT[v] || v; }
     let appointments = [];
     let selectedFile = null;
     let photoRemoveRequested = false;
@@ -1558,16 +2032,16 @@
 
     function translateAuthError(code) {
       const map = {
-        'auth/invalid-email': 'El correo electrónico no es válido.',
-        'auth/user-disabled': 'Esta cuenta fue deshabilitada.',
-        'auth/user-not-found': 'No existe una cuenta con ese correo.',
-        'auth/wrong-password': 'Contraseña incorrecta.',
-        'auth/invalid-credential': 'Correo o contraseña incorrectos.',
-        'auth/missing-password': 'Ingresá tu contraseña.',
-        'auth/too-many-requests': 'Demasiados intentos. Probá de nuevo en unos minutos.',
-        'auth/network-request-failed': 'Sin conexión a internet. Verificá tu red.'
+        'auth/invalid-email': 'O e-mail informado não é válido.',
+        'auth/user-disabled': 'Esta conta foi desativada.',
+        'auth/user-not-found': 'Não existe conta com esse e-mail.',
+        'auth/wrong-password': 'Senha incorreta.',
+        'auth/invalid-credential': 'E-mail ou senha incorretos.',
+        'auth/missing-password': 'Digite sua senha.',
+        'auth/too-many-requests': 'Muitas tentativas. Tente novamente em alguns minutos.',
+        'auth/network-request-failed': 'Sem conexão com a internet. Verifique sua rede.'
       };
-      return map[code] || 'Ocurrió un error al iniciar sesión. Intentá nuevamente.';
+      return map[code] || 'Ocorreu um erro ao entrar. Tente novamente.';
     }
 
     async function handleLogin(e) {
@@ -1579,7 +2053,7 @@
       authError.style.display = 'none';
       authSuccess.style.display = 'none';
       btn.disabled = true;
-      btn.textContent = 'Ingresando...';
+      btn.textContent = 'Entrando...';
 
       try {
         await auth.signInWithEmailAndPassword(email, password);
@@ -1596,12 +2070,12 @@
     async function handlePasswordReset() {
       const email = document.getElementById('authEmail').value.trim();
       if (!email) {
-        showAuthMessage(authError, 'Escribí tu correo electrónico arriba y tocá de nuevo en "¿Olvidaste tu contraseña?".');
+        showAuthMessage(authError, 'Digite seu e-mail acima e toque novamente em "Esqueceu a senha?".');
         return;
       }
       try {
         await auth.sendPasswordResetEmail(email);
-        showAuthMessage(authSuccess, `Te enviamos un correo a ${email} para restablecer tu contraseña.`);
+        showAuthMessage(authSuccess, `Enviamos um e-mail para ${email} para redefinir sua senha.`);
       } catch (err) {
         console.error(err);
         showAuthMessage(authError, translateAuthError(err.code));
@@ -1609,12 +2083,12 @@
     }
 
     async function handleLogout() {
-      if (!confirm('¿Cerrar sesión?')) return;
+      if (!confirm('Deseja sair?')) return;
       try {
         await auth.signOut();
       } catch (err) {
         console.error(err);
-        alert('Error al cerrar sesión: ' + err.message);
+        alert('Erro ao sair: ' + err.message);
       }
     }
 
@@ -1659,6 +2133,8 @@
       if (!nextScreen) return;
       nextScreen.classList.add('active');
       currentScreenId = screenId;
+      updateTabBar();
+      window.scrollTo(0, 0);
     }
 
     function goBack() {
@@ -1684,6 +2160,47 @@
     }
 
     addPreviousMenuButtons();
+
+    /* BARRA INFERIOR */
+    const TAB_BY_SCREEN = {
+      'module-menu':'home','module-resumo':'home',
+      'module-submenu-agenda':'agenda','module-agendar':'agenda','module-agenda':'agenda','module-manutencion':'agenda','module-cumpleanos':'agenda',
+      'module-submenu-clientes':'clientes','module-ficha':'clientes','module-inativas':'clientes','module-top':'clientes',
+      'module-submenu-financeiro':'financeiro','module-financeiro':'financeiro',
+      'module-submenu-ferramentas':'ferramentas','module-cita':'ferramentas'
+    };
+    const SCREEN_BY_TAB = {
+      home:'module-menu', agenda:'module-submenu-agenda', clientes:'module-submenu-clientes',
+      financeiro:'module-submenu-financeiro', ferramentas:'module-submenu-ferramentas'
+    };
+    function updateTabBar() {
+      const tab = TAB_BY_SCREEN[currentScreenId] || 'home';
+      document.querySelectorAll('.tabbar button').forEach(b => {
+        const on = b.dataset.tab === tab;
+        b.classList.toggle('active', on);
+        if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+      });
+      document.getElementById('appContainer').classList.toggle('on-home', currentScreenId === 'module-menu');
+    }
+    function tabGo(tab) {
+      screenHistory.length = 0;
+      openScreen(SCREEN_BY_TAB[tab] || 'module-menu', true);
+    }
+    updateTabBar();
+
+    function syncPhotoUI(url) {
+      const preview = document.getElementById('photoPreview');
+      const label = document.getElementById('photoCurrentLabel');
+      const btn = document.getElementById('btnRemovePhoto');
+      if (url) {
+        preview.src = url; preview.style.display = 'block';
+        label.textContent = 'Foto atual'; label.style.display = 'block';
+        btn.style.display = 'block';
+      } else {
+        preview.removeAttribute('src'); preview.style.display = 'none';
+        label.style.display = 'none'; btn.style.display = 'none';
+      }
+    }
     function openDashboardSummary() {
       openScreen('module-resumo');
     }
@@ -1984,7 +2501,7 @@
         updateDashboard();
         updateClientSelectOptions();
       }, err => {
-        console.error('Error al escuchar clients:', err);
+        console.error('Erro ao escutar clients:', err);
       });
 
       unsubscribeAppointments = db.collection('appointments').orderBy('date', 'asc').onSnapshot(snapshot => {
@@ -1998,7 +2515,7 @@
         updateAgendaAlerts();
         updateDashboard();
       }, err => {
-        console.error('Error al escuchar appointments:', err);
+        console.error('Erro ao escutar appointments:', err);
       });
     }
 
@@ -2015,7 +2532,7 @@
     function renderClients(dataToRender) {
       clientList.innerHTML = '';
       if (dataToRender.length === 0) {
-        clientList.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem;">Ninguna clienta registrada.</p>';
+        clientList.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem;">Nenhuma clienta cadastrada.</p>';
         return;
       }
 
@@ -2031,9 +2548,9 @@
 
           if (diffDays > 20) {
             cardClass = 'item-card status-expired';
-            maintenanceText = `<br><span style="color:#e74c3c; font-weight:bold;">⚠️ Mantenimiento Vencido (${diffDays} días)</span>`;
+            maintenanceText = `<br><span style="color:#e74c3c; font-weight:bold;">⚠️ Manutenção Vencida (${diffDays} dias)</span>`;
           } else {
-            maintenanceText = `<br><span style="color:#27ae60;">Al día (${diffDays} días)</span>`;
+            maintenanceText = `<br><span style="color:#27ae60;">Em dia (${diffDays} dias)</span>`;
           }
         }
 
@@ -2048,13 +2565,13 @@
             <div class="card-info">
               <strong>${client.name}</strong><br>
               📞 ${client.phone} ${wspNum ? `<a href="${wspLink}" target="_blank" class="btn-wsp">💬 WhatsApp</a>` : ''}<br>
-              🗓️ Fecha: ${client.serviceDate || 'N/A'}<br>
-              👁️ Pestañas: ${client.technique || 'N/A'} | Cejas: ${client.cejas || 'Sin servicio'}<br>
-              💰 Monto: Gs. ${Number(client.price || 0).toLocaleString('es-PY')} | 🔄 Visitas: ${client.visitCount || 1}
+              🗓️ Data: ${client.serviceDate || 'N/A'}<br>
+              👁️ Cílios: ${pt(client.technique) || 'N/A'} | Sobrancelhas: ${pt(client.cejas || 'Sem serviço')}<br>
+              💰 Valor: Gs. ${Number(client.price || 0).toLocaleString('pt-BR')} | 🔄 Visitas: ${client.visitCount || 1}
               ${client.notes ? `<br>📝 Obs: ${client.notes}` : ''}
               ${maintenanceText}
               <div class="action-buttons">
-                <button class="btn-history" onclick="openHistoryModal('${client.id}')">📜 Historial</button>
+                <button class="btn-history" onclick="openHistoryModal('${client.id}')">📜 Histórico</button>
                 <button class="btn-edit" onclick="editClient('${client.id}')">Editar</button>
                 <button class="btn-delete" onclick="deleteClient('${client.id}')">Eliminar</button>
               </div>
@@ -2106,7 +2623,7 @@
           if (d.getMonth() + 1 === selectedMonthNumber && d.getFullYear() === selectedYear) {
             monthTotal += val;
             monthAppointments++;
-            const procedure = (c.technique || c.service || 'Sin procedimiento').trim();
+            const procedure = pt((c.technique || c.service || 'Sem procedimento').trim());
             procedureCounts[procedure] = (procedureCounts[procedure] || 0) + 1;
           }
         }
@@ -2115,11 +2632,11 @@
       const average = monthAppointments ? monthTotal / monthAppointments : 0;
       const topProcedureEntry = Object.entries(procedureCounts).sort((a, b) => b[1] - a[1])[0];
       const periodDate = new Date(selectedYear, selectedMonthNumber - 1, 1);
-      const periodLabel = periodDate.toLocaleDateString('es-PY', { month: 'long', year: 'numeric' });
+      const periodLabel = periodDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
 
-      document.getElementById('monthTotal').textContent = `Gs. ${monthTotal.toLocaleString('es-PY')}`;
+      document.getElementById('monthTotal').textContent = `Gs. ${monthTotal.toLocaleString('pt-BR')}`;
       document.getElementById('monthAppointments').textContent = monthAppointments;
-      document.getElementById('monthAverage').textContent = `Gs. ${Math.round(average).toLocaleString('es-PY')}`;
+      document.getElementById('monthAverage').textContent = `Gs. ${Math.round(average).toLocaleString('pt-BR')}`;
       document.getElementById('topProcedure').textContent = topProcedureEntry ? `${topProcedureEntry[0]} (${topProcedureEntry[1]})` : '—';
       document.getElementById('financePeriodNote').textContent = `Mostrando dados de ${periodLabel}.`;
     }
@@ -2129,7 +2646,7 @@
       topClientsList.innerHTML = '';
 
       if (sorted.length === 0) {
-        topClientsList.innerHTML = '<p style="text-align:center; grid-column:span 3; color:var(--text-muted); font-size:0.85rem;">Sin datos suficientes.</p>';
+        topClientsList.innerHTML = '<p style="text-align:center; grid-column:span 3; color:var(--text-muted); font-size:0.85rem;">Dados insuficientes.</p>';
         return;
       }
 
@@ -2173,7 +2690,7 @@
           div.innerHTML = `
             <div>
               <strong>${c.name}</strong><br>
-              <span style="color:var(--text-muted); font-size:0.78rem;">Última vez: ${c.serviceDate} (${diffDays} días atrás)</span>
+              <span style="color:var(--text-muted); font-size:0.78rem;">Última vez: ${c.serviceDate} (${diffDays} dias atrás)</span>
             </div>
             ${wspNum ? `<a href="${wspLink}" target="_blank" class="btn-wsp">💬 Escribir</a>` : ''}
           `;
@@ -2194,7 +2711,7 @@
         badge.style.display = 'none';
         if (agendaMaintenanceBadge) agendaMaintenanceBadge.style.display = 'none';
         card.classList.remove('urgency-low');
-        container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem;">Ninguna clienta en período de mantenimiento (15-20 días).</p>';
+        container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem;">Nenhuma clienta em período de manutenção (15-20 dias).</p>';
       }
     }
 
@@ -2227,7 +2744,7 @@
 
         if (isToday || isTomorrow) {
           count++;
-          const tag = isToday ? '<span style="color:#e91e63; font-weight:bold;">🎂 ¡ES HOY!</span>' : '<span style="color:#9c27b0; font-weight:bold;">🎁 ¡Es Mañana!</span>';
+          const tag = isToday ? '<span style="color:#e91e63; font-weight:bold;">🎂 É HOJE!</span>' : '<span style="color:#9c27b0; font-weight:bold;">🎁 É Amanhã!</span>';
           const wspNum = formatWhatsAppPhone(c.phone);
           const wspLink = wspNum ? `https://wa.me/${wspNum}?text=${encodeURIComponent('¡Feliz cumpleaños ' + c.name + '! Toda la felicidad del mundo para ti, ¡muchas felicidades!')}` : '#';
 
@@ -2236,7 +2753,7 @@
           div.innerHTML = `
             <div>
               <strong>${c.name}</strong> ${tag}<br>
-              <span style="color:var(--text-muted); font-size:0.78rem;">Fecha: ${parts[2]}/${parts[1]}</span>
+              <span style="color:var(--text-muted); font-size:0.78rem;">Data: ${parts[2]}/${parts[1]}</span>
             </div>
             ${wspNum ? `<a href="${wspLink}" target="_blank" class="btn-wsp">💬 Felicitar</a>` : ''}
           `;
@@ -2251,7 +2768,7 @@
       } else {
         badge.style.display = 'none';
         card.classList.remove('urgency-high');
-        container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem;">Ningún cumpleaños hoy o mañana.</p>';
+        container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem;">Nenhum aniversário hoje ou amanhã.</p>';
       }
     }
 
@@ -2259,7 +2776,7 @@
       const query = document.getElementById('appClientSearch').value;
       const selectedValue = appClientSelect.value;
       const filteredClients = clients.filter(client => clientMatchesSearch(client, query));
-      appClientSelect.innerHTML = '<option value="">Seleccione una clienta...</option>';
+      appClientSelect.innerHTML = '<option value="">Selecione uma clienta...</option>';
       filteredClients.forEach(c => {
         const opt = document.createElement('option');
         opt.value = c.name;
@@ -2321,6 +2838,17 @@
         agendaTomorrowAlert.classList.add('hidden');
         agendaTomorrowMessage.textContent = '';
       }
+
+      // Alertas também no card "Próximos Horários" (submenu Agenda)
+      const nt = document.getElementById('nextTodayBadge');
+      const nm = document.getElementById('nextTomorrowBadge');
+      const nc = document.getElementById('nextAppsCard');
+      if (nt) { nt.style.display = todayCount > 0 ? 'flex' : 'none'; nt.textContent = todayCount; }
+      if (nm) { nm.style.display = tomorrowCount > 0 ? 'flex' : 'none'; nm.textContent = tomorrowCount; }
+      if (nc) {
+        nc.classList.toggle('urgency-high', todayCount > 0);
+        nc.classList.toggle('urgency-low', todayCount === 0 && tomorrowCount > 0);
+      }
     }
 
     function calculateInactiveClients(minDays = 30) {
@@ -2352,7 +2880,7 @@
         const message = `Hola ${client.name || ''}, ¿cómo estás? Ya pasaron ${diffDays} días desde tu última cita. ¿Te gustaría agendar tu próximo mantenimiento?`;
         const item = document.createElement('div');
         item.className = 'maintenance-item inactive-item';
-        item.innerHTML = `<div class="inactive-item-info"><strong>${client.name || 'Cliente'}</strong><span style="color:var(--text-muted); font-size:0.78rem;">Última cita: ${client.serviceDate} (${diffDays} días)</span></div>${phone ? `<a href="https://wa.me/${phone}?text=${encodeURIComponent(message)}" target="_blank" rel="noopener" class="btn-wsp">💬 Escribir</a>` : '<span style="color:var(--text-muted); font-size:0.72rem;">Sin WhatsApp</span>'}`;
+        item.innerHTML = `<div class="inactive-item-info"><strong>${client.name || 'Cliente'}</strong><span style="color:var(--text-muted); font-size:0.78rem;">Último atendimento: ${client.serviceDate} (${diffDays} dias)</span></div>${phone ? `<a href="https://wa.me/${phone}?text=${encodeURIComponent(message)}" target="_blank" rel="noopener" class="btn-wsp">💬 Escribir</a>` : '<span style="color:var(--text-muted); font-size:0.72rem;">Sem WhatsApp</span>'}`;
         list.appendChild(item);
       });
     }
@@ -2380,7 +2908,7 @@
 
       document.getElementById('dashboardClients').textContent = clients.length;
       document.getElementById('dashboardTodayAppointments').textContent = todayApps.length;
-      document.getElementById('dashboardMonthTotal').textContent = `Gs. ${monthTotal.toLocaleString('es-PY')}`;
+      document.getElementById('dashboardMonthTotal').textContent = `Gs. ${monthTotal.toLocaleString('pt-BR')}`;
       document.getElementById('dashboardMaintenance').textContent = maintenanceCount;
       document.getElementById('dashboardNextAppointment').textContent = nextApp
         ? `Próximo horário: ${nextApp.clientName || 'Cliente'} — ${formatAgendaDate(nextApp.date)} às ${nextApp.time || '--:--'}.`
@@ -2483,7 +3011,7 @@
       if (!selectedAppointments.length) { appointmentList.innerHTML = `<div class="agenda-empty">📭 Agenda vazia para ${formatAgendaDate(selectedDate)}.</div>`; updateAgendaAlerts(); return; }
       selectedAppointments.forEach(app => {
         const st = normalizeAppointmentStatus(app), wspNum = formatWhatsAppPhone(app.clientPhone); const confirmMsg = `Hola ${app.clientName}, te escribo para confirmar tu cita de ${app.service || 'pestañas'} para el día ${app.date} a las ${app.time}. ¿Me confirmas tu asistencia por favor?`; const wspConfirmLink = wspNum ? `https://wa.me/${wspNum}?text=${encodeURIComponent(confirmMsg)}` : '#';
-        const div = document.createElement('div'); div.className = `item-card agenda-item status-${st}`; div.innerHTML = `<strong>👤 ${app.clientName || 'Cliente não informado'}</strong><br>🕒 Horário: <strong>${app.time || 'Não informado'}</strong><br>📅 Data: ${formatAgendaDate(app.date)}<br>💅 Procedimento: ${app.service || 'N/A'}<br><span class="agenda-status">${agendaStatusLabels[st]}</span><br>💵 Seña: Gs. ${Number(app.deposit || 0).toLocaleString('es-PY')}<div class="action-buttons">${wspNum ? `<a href="${wspConfirmLink}" target="_blank" class="btn-confirm-wsp">💬 Confirmar WhatsApp</a>` : ''}<button class="btn-complete" onclick="completeAppointment('${app.id}')">✅ Concluido (Generar Ficha)</button><button class="btn-edit" onclick="editAppointment('${app.id}')">Editar</button><button class="btn-delete" onclick="deleteAppointment('${app.id}')">Cancelar</button></div>`; appointmentList.appendChild(div);
+        const div = document.createElement('div'); div.className = `item-card agenda-item status-${st}`; div.innerHTML = `<strong>👤 ${app.clientName || 'Cliente não informado'}</strong><br>🕒 Horário: <strong>${app.time || 'Não informado'}</strong><br>📅 Data: ${formatAgendaDate(app.date)}<br>💅 Procedimento: ${app.service || 'N/A'}<br><span class="agenda-status">${agendaStatusLabels[st]}</span><br>💵 Sinal: Gs. ${Number(app.deposit || 0).toLocaleString('pt-BR')}<div class="action-buttons">${wspNum ? `<a href="${wspConfirmLink}" target="_blank" class="btn-confirm-wsp">💬 Confirmar WhatsApp</a>` : ''}<button class="btn-complete" onclick="completeAppointment('${app.id}')">✅ Concluído (Gerar Ficha)</button><button class="btn-edit" onclick="editAppointment('${app.id}')">Editar</button><button class="btn-delete" onclick="deleteAppointment('${app.id}')">Cancelar</button></div>`; appointmentList.appendChild(div);
       }); updateAgendaAlerts();
     }
     /* FORM SUBMIT CLIENTE */
@@ -2532,15 +3060,15 @@
           await db.collection('appointments').doc(appointmentIdToClear).delete();
         }
 
-        alert('¡Guardado con éxito!');
+        alert('Salvo com sucesso!');
         resetClientForm();
         goHome();
       } catch (err) {
         console.error(err);
-        alert('Error al guardar: ' + err.message);
+        alert('Erro ao salvar: ' + err.message);
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Guardar en la Nube';
+        btn.textContent = 'Salvar na Nuvem';
       }
     });
 
@@ -2554,9 +3082,9 @@
       document.getElementById('birthday').value = c.birthday || '';
       document.getElementById('serviceDate').value = c.serviceDate || '';
       document.getElementById('price').value = c.price || '';
-      document.getElementById('technique').value = c.technique || 'Sin servicio';
-      document.getElementById('cejas').value = c.cejas || 'Sin servicio';
-      document.getElementById('removal').value = c.removal || 'No';
+      document.getElementById('technique').value = pt(c.technique || 'Sem serviço');
+      document.getElementById('cejas').value = pt(c.cejas || 'Sem serviço');
+      document.getElementById('removal').value = pt(c.removal || 'Não');
       document.getElementById('curvature').value = c.curvature || 'C';
       document.getElementById('thickness').value = c.thickness || '0.07mm';
       document.getElementById('mapping').value = c.mapping || '';
@@ -2564,10 +3092,11 @@
       document.getElementById('visitCount').value = c.visitCount || 1;
       document.getElementById('notes').value = c.notes || '';
       document.getElementById('photoUrl').value = c.photoUrl || '';
+      syncPhotoUI(c.photoUrl || '');
       selectedFile = null;
       photoRemoveRequested = false;
 
-      document.getElementById('formTitle').textContent = '📝 Editar Ficha de Clienta';
+      document.getElementById('formTitle').textContent = '📝 Editar Ficha da Clienta';
       document.getElementById('btnCancelEdit').style.display = 'block';
       renderFichaHistory(c.phone, c.id);
       openScreen('module-ficha');
@@ -2578,7 +3107,8 @@
       document.getElementById('clientId').value = '';
       document.getElementById('appointmentIdToClear').value = '';
       document.getElementById('photoUrl').value = '';
-      document.getElementById('formTitle').textContent = '📝 Nueva Ficha / Servicio Realizado';
+      syncPhotoUI('');
+      document.getElementById('formTitle').textContent = '📝 Nova Ficha / Serviço Realizado';
       document.getElementById('btnCancelEdit').style.display = 'none';
       selectedFile = null;
       photoRemoveRequested = false;
@@ -2587,7 +3117,7 @@
     }
 
     async function deleteClient(id) {
-      if (confirm('¿Realmente deseas eliminar esta clienta?')) {
+      if (confirm('Deseja realmente excluir esta clienta?')) {
         await db.collection('clients').doc(id).delete();
       }
     }
@@ -2607,12 +3137,12 @@
         <div class="history-entry">
           <div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px;">
             <strong style="font-size:0.84rem; color:var(--primary);">🗓️ ${h.serviceDate || 'N/A'}</strong>
-            <span style="font-size:0.8rem; color:#2e9e64; font-weight:700; white-space:nowrap;">Gs. ${Number(h.price || 0).toLocaleString('es-PY')}</span>
+            <span style="font-size:0.8rem; color:#2e9e64; font-weight:700; white-space:nowrap;">Gs. ${Number(h.price || 0).toLocaleString('pt-BR')}</span>
           </div>
           <div style="font-size:0.8rem; color:var(--text-main); margin-top:3px;">
-            👁️ ${h.technique || 'N/A'}${h.cejas && h.cejas !== 'Sin servicio' ? ' | Cejas: ' + h.cejas : ''}
+            👁️ ${pt(h.technique) || 'N/A'}${h.cejas && pt(h.cejas) !== 'Sem serviço' ? ' | Sobrancelhas: ' + pt(h.cejas) : ''}
           </div>
-          ${h.mapping ? `<div style="font-size:0.78rem; color:var(--primary); font-weight:700; margin-top:3px;">🗺️ Mapeo: ${h.mapping}</div>` : ''}
+          ${h.mapping ? `<div style="font-size:0.78rem; color:var(--primary); font-weight:700; margin-top:3px;">🗺️ Mapeamento: ${h.mapping}</div>` : ''}
           ${h.serviceTime ? `<div style="font-size:0.76rem; color:var(--text-muted); margin-top:2px;">⏱️ ${h.serviceTime}</div>` : ''}
           ${h.notes ? `<div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">📝 ${h.notes}</div>` : ''}
         </div>
@@ -2645,7 +3175,7 @@
       const history = getClientHistory(c.phone, null);
 
       if (history.length === 0) {
-        list.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem;">Sin registros de trabajos para esta clienta.</p>';
+        list.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem;">Nenhum trabalho registrado para esta clienta.</p>';
       } else {
         list.innerHTML = history.map(historyEntryHTML).join('');
       }
@@ -2717,7 +3247,7 @@
         await db.collection('appointments').add(appData);
       }
 
-      alert('¡Agendamiento guardado con éxito!');
+      alert('Agendamento salvo com sucesso!');
       resetAppointmentForm();
       openScreen('module-agenda');
     });
@@ -2725,7 +3255,7 @@
     function resetAppointmentForm() {
       appointmentForm.reset();
       document.getElementById('appointmentId').value = '';
-      document.getElementById('btnSaveAppointment').textContent = 'Confirmar Agendamiento';
+      document.getElementById('btnSaveAppointment').textContent = 'Confirmar Agendamento';
       document.getElementById('btnCancelAppointmentEdit').style.display = 'none';
       document.getElementById('appDate').valueAsDate = new Date();
     }
@@ -2742,13 +3272,13 @@
       document.getElementById('appDeposit').value = app.deposit || '';
       document.getElementById('appStatus').value = app.status || 'aguardando';
 
-      document.getElementById('btnSaveAppointment').textContent = 'Actualizar Agendamiento';
+      document.getElementById('btnSaveAppointment').textContent = 'Atualizar Agendamento';
       document.getElementById('btnCancelAppointmentEdit').style.display = 'block';
       openScreen('module-agendar');
     }
 
     async function deleteAppointment(id) {
-      if (confirm('¿Deseas cancelar este agendamiento?')) {
+      if (confirm('Deseja cancelar este agendamento?')) {
         await db.collection('appointments').doc(id).delete();
       }
     }
@@ -2776,7 +3306,7 @@
 
     function exportToExcel() {
       const selectedPeriod = `${document.getElementById('financeYearSelect').value}-${document.getElementById('financeMonthSelect').value}`;
-      let csv = 'Nombre,Telefono,Cumpleanos,Fecha Atencion,Monto,Tecnica,Cejas,Visitas\n';
+      let csv = 'Nome,Telefone,Aniversario,Data Atendimento,Valor,Tecnica,Sobrancelhas,Visitas\n';
       clients.filter(c => String(c.serviceDate || '').slice(0, 7) === selectedPeriod).forEach(c => {
         csv += `"${c.name || ''}","${c.phone || ''}","${c.birthday || ''}","${c.serviceDate || ''}",${c.price || 0},"${c.technique || ''}","${c.cejas || ''}",${c.visitCount || 1}\n`;
       });
