@@ -1357,6 +1357,40 @@
       font-size: 0.9rem; font-weight: 800; color: var(--gold);
     }
 
+    .quick-reservation-card {
+      margin: 0 0 15px;
+      padding: 17px;
+      border: 1px solid color-mix(in srgb, var(--accent-gold) 46%, var(--border-color));
+      border-radius: 18px;
+      background: linear-gradient(145deg, var(--card-bg), color-mix(in srgb, var(--primary-light) 30%, var(--bg-container)));
+      box-shadow: var(--shadow-card);
+    }
+    .quick-reservation-heading { display:flex; align-items:center; gap:11px; margin-bottom:13px; }
+    .quick-reservation-icon {
+      display:grid; flex:0 0 42px; width:42px; height:42px; place-items:center;
+      border-radius:14px; background:var(--primary-light); color:var(--primary);
+      font-size:1.8rem; line-height:1;
+    }
+    .quick-reservation-heading h2 { color:var(--primary); font-family:var(--font-display); font-size:1.02rem; }
+    .quick-reservation-heading p { margin-top:3px; color:var(--text-muted); font-size:.76rem; }
+    #quickReservationSearch { border-color:color-mix(in srgb, var(--accent-gold) 45%, var(--border-color)); }
+    .quick-reservation-results { display:grid; gap:8px; margin-top:10px; }
+    .quick-reservation-hint, .quick-reservation-empty {
+      margin:0; padding:10px 11px; border-radius:10px; background:var(--card-item-bg);
+      color:var(--text-muted); font-size:.78rem; line-height:1.4;
+    }
+    .quick-reservation-result {
+      padding:11px 12px; border:1px solid var(--border-color); border-left:4px solid var(--accent-gold);
+      border-radius:11px; background:var(--card-item-bg); color:var(--text-main); font-size:.8rem; line-height:1.45;
+    }
+    .quick-reservation-result.has-booking { border-left-color:#2e9e64; }
+    .quick-reservation-result strong { display:block; margin-bottom:3px; color:var(--primary); font-size:.88rem; }
+    .quick-reservation-result .booking-status { color:var(--text-muted); font-weight:700; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    @media (max-width: 430px) {
+      .quick-reservation-card { padding:14px; margin-bottom:12px; }
+      .quick-reservation-heading h2 { font-size:.96rem; }
+    }
     /* ===== Alertas em "Próximos Horários" + logo no rodapé de cada tela ===== */
     #nextAppsCard .menu-badge { top: 12px; right: 12px; min-width: 28px; height: 28px; font-size: 0.9rem; }
     #nextAppsCard .menu-badge.tomorrow-badge { top: 46px; }
@@ -1490,6 +1524,20 @@
           <div id="bdayCard" class="menu-card bday-card" onclick="openScreen('module-cumpleanos')"><span id="bdayCountBadge" class="menu-badge" style="display:none;">0</span><div class="menu-card-icon">🎂</div><div class="menu-card-title">Aniversários</div></div>
         </div>
       </div>
+      <section class="quick-reservation-card" aria-labelledby="quickReservationTitle">
+        <div class="quick-reservation-heading">
+          <span class="quick-reservation-icon" aria-hidden="true">⌕</span>
+          <div>
+            <h2 id="quickReservationTitle">Consulta rápida de reserva</h2>
+            <p>Busque a cliente por nome ou telefone</p>
+          </div>
+        </div>
+        <label class="sr-only" for="quickReservationSearch">Nome ou telefone da cliente</label>
+        <input type="search" id="quickReservationSearch" placeholder="Digite o nome ou telefone..." autocomplete="off" oninput="searchQuickReservation()">
+        <div id="quickReservationResults" class="quick-reservation-results" aria-live="polite" aria-atomic="true">
+          <p class="quick-reservation-hint">Digite pelo menos 2 caracteres para consultar.</p>
+        </div>
+      </section>
     </div>
 
     <!-- TELA: SUBMENU CLIENTES -->
@@ -2501,6 +2549,7 @@
         renderInactiveClients();
         updateDashboard();
         updateClientSelectOptions();
+        searchQuickReservation();
       }, err => {
         console.error('Erro ao escutar clients:', err);
       });
@@ -2515,6 +2564,7 @@
         if (agendaView === 'monthly') renderMonthlyAgenda();
         updateAgendaAlerts();
         updateDashboard();
+        searchQuickReservation();
       }, err => {
         console.error('Erro ao escutar appointments:', err);
       });
@@ -2931,6 +2981,95 @@
         : '<div class="dashboard-reminder">✅ Nenhum lembrete pendente para hoje.</div>';
     }
 
+    function normalizeQuickSearchValue(value) {
+      return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    }
+
+    function searchQuickReservation() {
+      const input = document.getElementById('quickReservationSearch');
+      const results = document.getElementById('quickReservationResults');
+      if (!input || !results) return;
+
+      const query = normalizeQuickSearchValue(input.value);
+      const queryDigits = query.replace(/\D/g, '');
+      results.replaceChildren();
+      if (query.length < 2 && queryDigits.length < 2) {
+        const hint = document.createElement('p');
+        hint.className = 'quick-reservation-hint';
+        hint.textContent = 'Digite pelo menos 2 caracteres para consultar.';
+        results.appendChild(hint);
+        return;
+      }
+
+      const matches = (value, phone) => {
+        const normalized = normalizeQuickSearchValue(value);
+        const digits = String(phone || '').replace(/\D/g, '');
+        return normalized.includes(query) || (queryDigits.length >= 2 && digits.includes(queryDigits));
+      };
+      const matchedClients = clients.filter(client => matches(client.name, client.phone));
+      const todayKey = getTodayDateKey();
+      const activeBookings = appointments.filter(app =>
+        String(app.date || '') >= todayKey &&
+        !['cancelado', 'falta', 'concluido'].includes(normalizeAppointmentStatus(app))
+      );
+      const bookingForClient = client => activeBookings
+        .filter(app =>
+          (app.clientId && app.clientId === client.id) ||
+          (client.phone && String(app.clientPhone || '').replace(/\D/g, '') === String(client.phone).replace(/\D/g, '')) ||
+          normalizeQuickSearchValue(app.clientName) === normalizeQuickSearchValue(client.name)
+        )
+        .sort((a, b) => `${a.date || ''}T${a.time || ''}`.localeCompare(`${b.date || ''}T${b.time || ''}`));
+
+      const cards = matchedClients.slice(0, 6).map(client => ({ client, bookings: bookingForClient(client) }));
+      const seenNames = new Set(cards.map(card => normalizeQuickSearchValue(card.client.name)));
+      const unmatchedBookings = activeBookings.filter(app =>
+        matches(app.clientName, app.clientPhone) && !seenNames.has(normalizeQuickSearchValue(app.clientName))
+      );
+      unmatchedBookings.forEach(app => {
+        const key = normalizeQuickSearchValue(app.clientName || app.clientPhone);
+        let card = cards.find(item => normalizeQuickSearchValue(item.client.name || item.client.phone) === key);
+        if (!card) {
+          card = { client: { name: app.clientName || 'Cliente', phone: app.clientPhone || '' }, bookings: [] };
+          cards.push(card);
+        }
+        if (!card.bookings.some(existing => existing.id === app.id)) card.bookings.push(app);
+      });
+
+      if (!cards.length) {
+        const empty = document.createElement('p');
+        empty.className = 'quick-reservation-empty';
+        empty.textContent = 'Não encontrei cliente nem reserva com esse nome ou telefone.';
+        results.appendChild(empty);
+        return;
+      }
+
+      cards.slice(0, 6).forEach(({ client, bookings }) => {
+        const card = document.createElement('div');
+        card.className = `quick-reservation-result${bookings.length ? ' has-booking' : ''}`;
+        const name = document.createElement('strong');
+        name.textContent = client.name || 'Cliente';
+        card.appendChild(name);
+        if (bookings.length) {
+          bookings.forEach(app => {
+            const detail = document.createElement('div');
+            const status = agendaStatusLabels[normalizeAppointmentStatus(app)];
+            detail.textContent = `Tem reserva: ${formatAgendaDate(app.date)} às ${app.time || 'horário não informado'}${app.service ? ` · ${app.service}` : ''} · ${status}`;
+            card.appendChild(detail);
+          });
+        } else {
+          const detail = document.createElement('div');
+          detail.textContent = 'Sem reserva futura ativa.';
+          card.appendChild(detail);
+        }
+        results.appendChild(card);
+      });
+      if (cards.length > 6) {
+        const note = document.createElement('p');
+        note.className = 'quick-reservation-hint';
+        note.textContent = 'Há mais resultados; refine a busca pelo telefone ou nome completo.';
+        results.appendChild(note);
+      }
+    }
     function formatAgendaDate(dateKey) {
       if (!dateKey) return 'Data não selecionada';
       const parts = dateKey.split('-');
@@ -3002,6 +3141,95 @@
         if (!dayApps.length) col.innerHTML += '<div style="text-align:center;color:var(--text-muted);font-size:.68rem;padding:10px 0;">Vazia</div>';
         dayApps.forEach(app => { const st = normalizeAppointmentStatus(app); col.innerHTML += `<div class="agenda-week-item status-${st}"><strong>${app.time || '--:--'} · ${app.clientName || 'Cliente'}</strong><span class="agenda-status">${agendaStatusLabels[st]}</span></div>`; });
         agendaWeekGrid.appendChild(col);
+      }
+    }
+    function normalizeQuickSearchValue(value) {
+      return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    }
+
+    function searchQuickReservation() {
+      const input = document.getElementById('quickReservationSearch');
+      const results = document.getElementById('quickReservationResults');
+      if (!input || !results) return;
+
+      const query = normalizeQuickSearchValue(input.value);
+      const queryDigits = query.replace(/\D/g, '');
+      results.replaceChildren();
+      if (query.length < 2 && queryDigits.length < 2) {
+        const hint = document.createElement('p');
+        hint.className = 'quick-reservation-hint';
+        hint.textContent = 'Digite pelo menos 2 caracteres para consultar.';
+        results.appendChild(hint);
+        return;
+      }
+
+      const matches = (value, phone) => {
+        const normalized = normalizeQuickSearchValue(value);
+        const digits = String(phone || '').replace(/\D/g, '');
+        return normalized.includes(query) || (queryDigits.length >= 2 && digits.includes(queryDigits));
+      };
+      const matchedClients = clients.filter(client => matches(client.name, client.phone));
+      const todayKey = getTodayDateKey();
+      const activeBookings = appointments.filter(app =>
+        String(app.date || '') >= todayKey &&
+        !['cancelado', 'falta', 'concluido'].includes(normalizeAppointmentStatus(app))
+      );
+      const bookingForClient = client => activeBookings
+        .filter(app =>
+          (app.clientId && app.clientId === client.id) ||
+          (client.phone && String(app.clientPhone || '').replace(/\D/g, '') === String(client.phone).replace(/\D/g, '')) ||
+          normalizeQuickSearchValue(app.clientName) === normalizeQuickSearchValue(client.name)
+        )
+        .sort((a, b) => `${a.date || ''}T${a.time || ''}`.localeCompare(`${b.date || ''}T${b.time || ''}`));
+
+      const cards = matchedClients.slice(0, 6).map(client => ({ client, bookings: bookingForClient(client) }));
+      const seenNames = new Set(cards.map(card => normalizeQuickSearchValue(card.client.name)));
+      const unmatchedBookings = activeBookings.filter(app =>
+        matches(app.clientName, app.clientPhone) && !seenNames.has(normalizeQuickSearchValue(app.clientName))
+      );
+      unmatchedBookings.forEach(app => {
+        const key = normalizeQuickSearchValue(app.clientName || app.clientPhone);
+        let card = cards.find(item => normalizeQuickSearchValue(item.client.name || item.client.phone) === key);
+        if (!card) {
+          card = { client: { name: app.clientName || 'Cliente', phone: app.clientPhone || '' }, bookings: [] };
+          cards.push(card);
+        }
+        if (!card.bookings.some(existing => existing.id === app.id)) card.bookings.push(app);
+      });
+
+      if (!cards.length) {
+        const empty = document.createElement('p');
+        empty.className = 'quick-reservation-empty';
+        empty.textContent = 'Não encontrei cliente nem reserva com esse nome ou telefone.';
+        results.appendChild(empty);
+        return;
+      }
+
+      cards.slice(0, 6).forEach(({ client, bookings }) => {
+        const card = document.createElement('div');
+        card.className = `quick-reservation-result${bookings.length ? ' has-booking' : ''}`;
+        const name = document.createElement('strong');
+        name.textContent = client.name || 'Cliente';
+        card.appendChild(name);
+        if (bookings.length) {
+          bookings.forEach(app => {
+            const detail = document.createElement('div');
+            const status = agendaStatusLabels[normalizeAppointmentStatus(app)];
+            detail.textContent = `Tem reserva: ${formatAgendaDate(app.date)} às ${app.time || 'horário não informado'}${app.service ? ` · ${app.service}` : ''} · ${status}`;
+            card.appendChild(detail);
+          });
+        } else {
+          const detail = document.createElement('div');
+          detail.textContent = 'Sem reserva futura ativa.';
+          card.appendChild(detail);
+        }
+        results.appendChild(card);
+      });
+      if (cards.length > 6) {
+        const note = document.createElement('p');
+        note.className = 'quick-reservation-hint';
+        note.textContent = 'Há mais resultados; refine a busca pelo telefone ou nome completo.';
+        results.appendChild(note);
       }
     }
     function formatAgendaDate(dateKey) { if (!dateKey) return 'Data não selecionada'; const p = dateKey.split('-'); return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : dateKey; }
